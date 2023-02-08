@@ -315,7 +315,7 @@ void run(string file){//, string file2){
  
    
   
-  TFile *ntuple = new TFile("ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_12July2022_Run2016_Total.root", "RECREATE");
+  TFile *ntuple = new TFile("UPDATED_ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_12July2022_Run2016_Total.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -3486,63 +3486,89 @@ void run(string file){//, string file2){
 //      aux->Fill();
   
    gotToEndCount += 1; 
-   if (temp_Z_mass.size() > 1) {
-       std::cout << "FOUND AN EVENT WITH MORE THAN ONE CANDIDATE, THROW IT AWAY! FAILED" << std::endl; 
-      QuickCheckCount += 1;
-      FailureCount += 1; 
-//      continue;
-  
-   }  
+//    if (temp_Z_mass.size() > 1) {
+//        std::cout << "FOUND AN EVENT WITH MORE THAN ONE CANDIDATE, THROW IT AWAY! FAILED" << std::endl; 
+//       QuickCheckCount += 1;
+//       FailureCount += 1; 
+// //      continue;
+//   
+//    }  
  
-  //the final survivor, one per event at most 
-   if (temp_Z_mass.size() == 1  && temp_upsi_mass.size() == 1){
-     fillCount += 1; 
+  //the final survivors, we want one quad per event at most, in case that more than one quad survives
+  //this part of the code picks the quad with the highest four muon vertex probability of all the survivors  
+
+
+double vertex_comparator = -100000; //For events that reach this stage, temp_big4MuVtxProb value should always be >= 0.01, but
+//am setting it to -100000 just to be super safe
+
+double my_counter=0;
+
+for (int jj=0; jj<(int)temp_big4MuVtxProb.size(); jj++)   {
+   my_counter++;
+   if (my_counter == 1){
+      fillCount += 1; 
+  }
+  //this loop will always be entered at least once (assuming there are any surviving quads at all)
+  //because the smallest temp_big4MuVtxProb.at(jj) can be given that it reached this stage is 0.01
+  //if there are multiple surviving quads, the line vertex_comparator = temp_big4MuVtxProb.at(jj);
+  //will ensure on subsequent passes through the temp_big4MuVtxProb vector that this loop is
+  //only entered if the big4MuVtxProb value of the quad is greater than the one already stored in vertex_comparator,
+  //i.e. is bigger than the big4MuVtxProb of the quad whose values have already been written here. If the big4MuVtxProb of this 
+  //next quad is greater than what is already stored, the stored values will be overwritten by the values associated
+  //with this quad that has the higher big4MuVtxProb
+  //In this way, we pick out the surviving quad with the highest big4MuVtxProb value and record its
+  //associated information
+  if (vertex_comparator<temp_big4MuVtxProb.at(jj)){    
+     Z_mass =  temp_Z_mass.at(jj);
+     upsi_mass = temp_upsi_mass.at(jj);
      
-     Z_mass =  temp_Z_mass.at(0);
-     upsi_mass = temp_upsi_mass.at(0);
-     
-     Z_pT = temp_Z_pT.at(0);
-     Z_eta = temp_Z_eta.at(0);
-     Z_RAPIDITY = temp_Z_RAPIDITY.at(0);
-     Z_phi = temp_Z_phi.at(0); 
-     upsi_pT = temp_upsi_pT.at(0);
-     upsi_eta = temp_upsi_eta.at(0);
-     upsi_RAPIDITY = temp_upsi_RAPIDITY.at(0);
-     upsi_phi =temp_upsi_phi.at(0);
+     Z_pT = temp_Z_pT.at(jj);
+     Z_eta = temp_Z_eta.at(jj);
+     Z_RAPIDITY = temp_Z_RAPIDITY.at(jj);
+     Z_phi = temp_Z_phi.at(jj); 
+     upsi_pT = temp_upsi_pT.at(jj);
+     upsi_eta = temp_upsi_eta.at(jj);
+     upsi_RAPIDITY = temp_upsi_RAPIDITY.at(jj);
+     upsi_phi =temp_upsi_phi.at(jj);
   
-     lead_pT_mu_from_Z_pT = temp_lead_pT_mu_from_Z_pT.at(0);
-     lead_pT_mu_from_Z_eta = temp_lead_pT_mu_from_Z_eta.at(0);
-     lead_pT_mu_from_Z_RAPIDITY = temp_lead_pT_mu_from_Z_RAPIDITY.at(0);
-     lead_pT_mu_from_Z_phi = temp_lead_pT_mu_from_Z_phi.at(0); 
-     sublead_pT_mu_from_Z_pT = temp_sublead_pT_mu_from_Z_pT.at(0);
-     sublead_pT_mu_from_Z_eta = temp_sublead_pT_mu_from_Z_eta.at(0);
-     sublead_pT_mu_from_Z_RAPIDITY =temp_sublead_pT_mu_from_Z_RAPIDITY.at(0);
-     sublead_pT_mu_from_Z_phi =temp_sublead_pT_mu_from_Z_phi.at(0); 
+     lead_pT_mu_from_Z_pT = temp_lead_pT_mu_from_Z_pT.at(jj);
+     lead_pT_mu_from_Z_eta = temp_lead_pT_mu_from_Z_eta.at(jj);
+     lead_pT_mu_from_Z_RAPIDITY = temp_lead_pT_mu_from_Z_RAPIDITY.at(jj);
+     lead_pT_mu_from_Z_phi = temp_lead_pT_mu_from_Z_phi.at(jj); 
+     sublead_pT_mu_from_Z_pT = temp_sublead_pT_mu_from_Z_pT.at(jj);
+     sublead_pT_mu_from_Z_eta = temp_sublead_pT_mu_from_Z_eta.at(jj);
+     sublead_pT_mu_from_Z_RAPIDITY =temp_sublead_pT_mu_from_Z_RAPIDITY.at(jj);
+     sublead_pT_mu_from_Z_phi =temp_sublead_pT_mu_from_Z_phi.at(jj); 
  
-     lead_pT_mu_from_upsi_pT = temp_lead_pT_mu_from_upsi_pT.at(0);
-     lead_pT_mu_from_upsi_eta = temp_lead_pT_mu_from_upsi_eta.at(0);
-     lead_pT_mu_from_upsi_RAPIDITY = temp_lead_pT_mu_from_upsi_RAPIDITY.at(0);
-     lead_pT_mu_from_upsi_phi = temp_lead_pT_mu_from_upsi_phi.at(0); 
-     sublead_pT_mu_from_upsi_pT = temp_sublead_pT_mu_from_upsi_pT.at(0);
-     sublead_pT_mu_from_upsi_eta = temp_sublead_pT_mu_from_upsi_eta.at(0);
-     sublead_pT_mu_from_upsi_RAPIDITY = temp_sublead_pT_mu_from_upsi_RAPIDITY.at(0); 
-     sublead_pT_mu_from_upsi_phi =  temp_sublead_pT_mu_from_upsi_phi.at(0);
+     lead_pT_mu_from_upsi_pT = temp_lead_pT_mu_from_upsi_pT.at(jj);
+     lead_pT_mu_from_upsi_eta = temp_lead_pT_mu_from_upsi_eta.at(jj);
+     lead_pT_mu_from_upsi_RAPIDITY = temp_lead_pT_mu_from_upsi_RAPIDITY.at(jj);
+     lead_pT_mu_from_upsi_phi = temp_lead_pT_mu_from_upsi_phi.at(jj); 
+     sublead_pT_mu_from_upsi_pT = temp_sublead_pT_mu_from_upsi_pT.at(jj);
+     sublead_pT_mu_from_upsi_eta = temp_sublead_pT_mu_from_upsi_eta.at(jj);
+     sublead_pT_mu_from_upsi_RAPIDITY = temp_sublead_pT_mu_from_upsi_RAPIDITY.at(jj); 
+     sublead_pT_mu_from_upsi_phi =  temp_sublead_pT_mu_from_upsi_phi.at(jj);
      
-     lead_pT_mu_from_upsi_pfIso = temp_lead_pT_mu_from_upsi_pfIso.at(0);
-     sublead_pT_mu_from_upsi_pfIso = temp_sublead_pT_mu_from_upsi_pfIso.at(0);
+     lead_pT_mu_from_upsi_pfIso = temp_lead_pT_mu_from_upsi_pfIso.at(jj);
+     sublead_pT_mu_from_upsi_pfIso = temp_sublead_pT_mu_from_upsi_pfIso.at(jj);
      
-     lead_pT_mu_from_Z_pfIso = temp_lead_pT_mu_from_Z_pfIso.at(0);
-     sublead_pT_mu_from_Z_pfIso = temp_sublead_pT_mu_from_Z_pfIso.at(0);
+     lead_pT_mu_from_Z_pfIso = temp_lead_pT_mu_from_Z_pfIso.at(jj);
+     sublead_pT_mu_from_Z_pfIso = temp_sublead_pT_mu_from_Z_pfIso.at(jj);
      
-     big4MuVtxProb = temp_big4MuVtxProb.at(0);
+     big4MuVtxProb = temp_big4MuVtxProb.at(jj);
      
      
      if (doMCTruthMatching){
-       upsi_type = temp_upsi_type.at(0); 
+       upsi_type = temp_upsi_type.at(jj); 
       }
       
-      if (!doMCTruthMatching){
+     if (!doMCTruthMatching){
         upsi_type = -1;
+      }
+     
+      vertex_comparator = temp_big4MuVtxProb.at(jj); //this line is key!
+      
+      
       }
      aux->Fill();
     }
