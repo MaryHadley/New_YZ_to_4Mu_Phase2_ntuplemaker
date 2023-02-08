@@ -262,7 +262,7 @@ void run(string file){//, string file2){
   
   double mu_mu_from_Z_Prob_Cut = 0.05; // 0.1;
   
-  double pfIso_Cut_Mu_from_Z = 0.2; //0.35; //0.17 for 2018 0.35; //0.35 for 2017 0.19; //0.19 for 2016 //0.2; // 0.35; //9999; //0.35; //when value is 9999, this cut should never fire
+  double pfIso_Cut_Mu_from_Z = 0.35; //0.35; //0.17 for 2018 0.35; //0.35 for 2017 0.19; //0.19 for 2016 //0.2; // 0.35; //9999; //0.35; //when value is 9999, this cut should never fire
   
   double pfIso_Cut_Mu_from_Upsi = 0.7; //2.;
   
@@ -310,10 +310,12 @@ void run(string file){//, string file2){
   double sublead_pT_mu_from_upsi_pfIso = -99;
   double lead_pT_mu_from_Z_pfIso = -99;
   double sublead_pT_mu_from_Z_pfIso = -99;
+  
+  double big4MuVtxProb = -99;
  
    
   
-  TFile *ntuple = new TFile("ntuple_pfIso0p2forZmu_0p7forUpsiMu_inputFileIs_12July2022_Run2016_Total.root", "RECREATE");
+  TFile *ntuple = new TFile("ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_12July2022_Run2016_Total.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -361,6 +363,8 @@ void run(string file){//, string file2){
   aux->Branch("sublead_pT_mu_from_upsi_pfIso", &sublead_pT_mu_from_upsi_pfIso);
   aux->Branch("lead_pT_mu_from_Z_pfIso", &lead_pT_mu_from_Z_pfIso);
   aux->Branch("sublead_pT_mu_from_Z_pfIso", &sublead_pT_mu_from_Z_pfIso);
+  
+  aux->Branch("big4MuVtxProb", &big4MuVtxProb);
 
 ///////////////////////////
 //////    D A T A    //////
@@ -426,6 +430,8 @@ void run(string file){//, string file2){
     std::vector<double> temp_lead_pT_mu_from_Z_pfIso;
     std::vector<double> temp_sublead_pT_mu_from_Z_pfIso;
     
+    std::vector<double> temp_big4MuVtxProb;
+    
     temp_Z_mass.clear();
     
     
@@ -468,6 +474,8 @@ void run(string file){//, string file2){
     temp_sublead_pT_mu_from_upsi_pfIso.clear();
     temp_lead_pT_mu_from_Z_pfIso.clear();
     temp_sublead_pT_mu_from_Z_pfIso.clear();
+    
+    temp_big4MuVtxProb.clear();
     
     mass1_quickAndDirty = 0.; mass2_quickAndDirty = 0.;
     
@@ -1256,6 +1264,10 @@ void run(string file){//, string file2){
             
             temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep1);
             temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep2);
+            
+            //FILL HERE 8 Feb. 2023
+            temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
+        //    std::cout << "(TREE->big4MuVtx->at(i))  " << (TREE->big4MuVtx->at(i)) << std::endl;
            
            }
             GotHereCount_Z_first_upsi_phase1_second_pair_12_34_56 += 1;
@@ -1436,6 +1448,9 @@ void run(string file){//, string file2){
                  
                  temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep1);
                  temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep2);
+                 
+                 //Fill here 8 Feb. 2023
+                 temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
                 
                  }
                  
@@ -1663,6 +1678,9 @@ void run(string file){//, string file2){
              
              temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep3);
              temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep4);
+             
+             //Fill here 8 Feb. 2023
+              temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
              }
            
            //flag Begin MC Truth Matching section here
@@ -1826,7 +1844,8 @@ void run(string file){//, string file2){
                    temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep3);
                    temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep4);
                   
-                  
+                   //Fill here 8 Feb. 2023
+                   temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
                   }
                 }
                 
@@ -2070,6 +2089,10 @@ void run(string file){//, string file2){
                 
                 temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep1);
                 temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep3);
+              
+               //Fill here 8 Feb. 2023
+               temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
+               
               }
             
             //flag Poodles 
@@ -2234,6 +2257,9 @@ void run(string file){//, string file2){
                     
                     temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep1);
                     temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep3);
+                    
+                    //Fill here 8 Feb. 2023
+                    temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
                   }
                 }
               }
@@ -2447,6 +2473,10 @@ void run(string file){//, string file2){
                 
                 temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep2);
                 temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep4);
+                
+                //Fill here 8 Feb. 2023
+                temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
+             
               }
             
             if (doMCTruthMatching){
@@ -2610,6 +2640,10 @@ void run(string file){//, string file2){
                    
                    temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep2);
                    temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep4);
+                   
+                   //Fill here 8 Feb. 2023
+                   temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
+                 
                   }
                 }
               }
@@ -2848,6 +2882,10 @@ void run(string file){//, string file2){
                  
                  temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep1);
                  temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep4);
+                 
+                 //Fill here 8 Feb. 2023
+                 temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
+           
             }
               
             if (doMCTruthMatching){
@@ -3012,6 +3050,8 @@ void run(string file){//, string file2){
                     temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep1);
                     temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep4);
                   
+                   //Fill here 8 Feb. 2023
+                   temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
                   
                   }
                   
@@ -3228,6 +3268,10 @@ void run(string file){//, string file2){
                   
                   temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep2);
                   temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep3);
+                  
+                  //Fill here 8 Feb. 2023
+                  temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
+               
                 }
              
              if (doMCTruthMatching){
@@ -3387,6 +3431,10 @@ void run(string file){//, string file2){
                     
                     temp_lead_pT_mu_from_Z_pfIso.push_back(pfIso_lep2);
                    temp_sublead_pT_mu_from_Z_pfIso.push_back(pfIso_lep3);
+                  
+                  //Fill here 8 Feb. 2023
+                  temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
+                  
                   }
                   
                   
@@ -3439,7 +3487,7 @@ void run(string file){//, string file2){
   
    gotToEndCount += 1; 
    if (temp_Z_mass.size() > 1) {
- //      std::cout << "FOUND AN EVENT WITH MORE THAN ONE CANDIDATE, THROW IT AWAY! FAILED" << std::endl; 
+       std::cout << "FOUND AN EVENT WITH MORE THAN ONE CANDIDATE, THROW IT AWAY! FAILED" << std::endl; 
       QuickCheckCount += 1;
       FailureCount += 1; 
 //      continue;
@@ -3485,6 +3533,9 @@ void run(string file){//, string file2){
      
      lead_pT_mu_from_Z_pfIso = temp_lead_pT_mu_from_Z_pfIso.at(0);
      sublead_pT_mu_from_Z_pfIso = temp_sublead_pT_mu_from_Z_pfIso.at(0);
+     
+     big4MuVtxProb = temp_big4MuVtxProb.at(0);
+     
      
      if (doMCTruthMatching){
        upsi_type = temp_upsi_type.at(0); 
