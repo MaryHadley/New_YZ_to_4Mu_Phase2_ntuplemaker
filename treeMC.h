@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Apr 20 03:55:02 2022 by ROOT version 6.14/09
+// Thu Feb  9 14:07:30 2023 by ROOT version 6.14/09
 // from TTree treemc/treemc
-// found on file: ZYto4Mu_Zto4Mu_pTCut3_MC_Bjorn_20April2022_inputFileIs_MC_DPS_2018_YZ_04A4F969-2F02-F24D-9BA7-2FAB6D708CB6.root
+// found on file: myNewFile.root
 //////////////////////////////////////////////////////////
 
 #ifndef treeMC_h
@@ -13,6 +13,7 @@
 #include <TFile.h>
 
 // Header file for the classes stored in the TTree if any.
+#include "vector"
 #include "vector"
 #include "vector"
 #include "vector"
@@ -109,10 +110,39 @@ public :
    vector<double>  *truth_Chib2_1P_photon_phi;
    vector<double>  *truth_Chib2_1P_photon_pdgid;
    vector<double>  *loop_enter_check;
-   vector<double>  *mc_event_number;
-   vector<double>  *mc_run_number;
+   vector<unsigned int> *mc_event_number;
+   vector<unsigned int> *mc_run_number;
    vector<unsigned int> *mc_lumi_section;
    vector<int>     *eventHasZUpsiNTo4Mu_Count;
+   vector<int>     *eventDoesNotHaveZUpsiNTo4Mu_Count;
+   vector<int>     *eventHasUpsi1ToMuMu_Count;
+   vector<int>     *eventHasUpsi2ToMuMu_Count;
+   vector<int>     *eventHasUpsi3ToMuMu_Count;
+   vector<int>     *eventHasZToMuMu_Count;
+   vector<int>     *eventHasZUpsi1To4Mu_Count;
+   vector<int>     *eventHasZUpsi2To4Mu_Count;
+   vector<int>     *eventHasZUpsi3To4Mu_Count;
+   vector<int>     *eventHasZUpsiNTo4MuButNoCandFound_Count;
+   vector<int>     *eventHasZUpsiNTo4MuCandFound_Count;
+   vector<double>  *truth_muon_pt;
+   vector<double>  *truth_muon_eta;
+   vector<double>  *truth_muon_phi;
+   vector<bool>    *truth_muHasUpsi1Ancestor;
+   vector<bool>    *truth_muHasZAncestor;
+   vector<bool>    *truth_muHasChib0_1PAncestor;
+   vector<bool>    *truth_muHasChib1_1PAncestor;
+   vector<bool>    *truth_muHasChib2_1PAncestor;
+   vector<bool>    *truth_muHasUpsi2Ancestor;
+   vector<bool>    *truth_muHasUpsi3Ancestor;
+   vector<bool>    *truth_muHasUpsi1FromUpsi2Ancestor;
+   vector<bool>    *truth_muHasUpsi1FromUpsi3Ancestor;
+   vector<bool>    *truth_muHasUpsi2FromUpsi3Ancestor;
+   vector<bool>    *truth_muHasUpsi1FromUpsi2FromUpsi3Ancestor;
+   vector<bool>    *truth_eventHasZUpsiNTo4Mu;
+   vector<bool>    *truth_eventHasZUpsi1To4Mu;
+   vector<bool>    *truth_eventHasZUpsi2To4Mu;
+   vector<bool>    *truth_eventHasZUpsi3To4Mu;
+   vector<bool>    *denominator_ZplusY;
 
    // List of branches
    TBranch        *b_truth_Zmuon_pt;   //!
@@ -203,6 +233,35 @@ public :
    TBranch        *b_mc_run_number;   //!
    TBranch        *b_mc_lumi_section;   //!
    TBranch        *b_eventHasZUpsiNTo4Mu_Count;   //!
+   TBranch        *b_eventDoesNotHaveZUpsiNTo4Mu_Count;   //!
+   TBranch        *b_eventHasUpsi1ToMuMu_Count;   //!
+   TBranch        *b_eventHasUpsi2ToMuMu_Count;   //!
+   TBranch        *b_eventHasUpsi3ToMuMu_Count;   //!
+   TBranch        *b_eventHasZToMuMu_Count;   //!
+   TBranch        *b_eventHasZUpsi1To4Mu_Count;   //!
+   TBranch        *b_eventHasZUpsi2To4Mu_Count;   //!
+   TBranch        *b_eventHasZUpsi3To4Mu_Count;   //!
+   TBranch        *b_eventHasZUpsiNTo4MuButNoCandFound_Count;   //!
+   TBranch        *b_eventHasZUpsiNTo4MuCandFound_Count;   //!
+   TBranch        *b_truth_muon_pt;   //!
+   TBranch        *b_truth_muon_eta;   //!
+   TBranch        *b_truth_muon_phi;   //!
+   TBranch        *b_truth_muHasUpsi1Ancestor;   //!
+   TBranch        *b_truth_muHasZAncestor;   //!
+   TBranch        *b_truth_muHasChib0_1PAncestor;   //!
+   TBranch        *b_truth_muHasChib1_1PAncestor;   //!
+   TBranch        *b_truth_muHasChib2_1PAncestor;   //!
+   TBranch        *b_truth_muHasUpsi2Ancestor;   //!
+   TBranch        *b_truth_muHasUpsi3Ancestor;   //!
+   TBranch        *b_truth_muHasUpsi1FromUpsi2Ancestor;   //!
+   TBranch        *b_truth_muHasUpsi1FromUpsi3Ancestor;   //!
+   TBranch        *b_truth_muHasUpsi2FromUpsi3Ancestor;   //!
+   TBranch        *b_truth_muHasUpsi1FromUpsi2FromUpsi3Ancestor;   //!
+   TBranch        *b_truth_eventHasZUpsiNTo4Mu;   //!
+   TBranch        *b_truth_eventHasZUpsi1To4Mu;   //!
+   TBranch        *b_truth_eventHasZUpsi2To4Mu;   //!
+   TBranch        *b_truth_eventHasZUpsi3To4Mu;   //!
+   TBranch        *b_denominator_ZplusY;   //!
 
    treeMC(TTree *tree=0);
    virtual ~treeMC();
@@ -223,12 +282,11 @@ treeMC::treeMC(TTree *tree) : fChain(0)
 // // if parameter tree is not specified (or zero), connect the file
 // // used to generate this class and read the Tree.
 //    if (tree == 0) {
-//       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("ZYto4Mu_Zto4Mu_pTCut3_MC_Bjorn_20April2022_inputFileIs_MC_DPS_2018_YZ_04A4F969-2F02-F24D-9BA7-2FAB6D708CB6.root");
+//       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("myNewFile.root");
 //       if (!f || !f->IsOpen()) {
-//          f = new TFile("ZYto4Mu_Zto4Mu_pTCut3_MC_Bjorn_20April2022_inputFileIs_MC_DPS_2018_YZ_04A4F969-2F02-F24D-9BA7-2FAB6D708CB6.root");
+//          f = new TFile("myNewFile.root");
 //       }
-//       TDirectory * dir = (TDirectory*)f->Get("ZYto4Mu_Zto4Mu_pTCut3_MC_Bjorn_20April2022_inputFileIs_MC_DPS_2018_YZ_04A4F969-2F02-F24D-9BA7-2FAB6D708CB6.root:/ZmuonAnalyzer");
-//       dir->GetObject("treemc",tree);
+//       f->GetObject("treemc",tree);
 // 
 //    }
 //    Init(tree);
@@ -371,6 +429,35 @@ void treeMC::Init(TTree *tree)
    mc_run_number = 0;
    mc_lumi_section = 0;
    eventHasZUpsiNTo4Mu_Count = 0;
+   eventDoesNotHaveZUpsiNTo4Mu_Count = 0;
+   eventHasUpsi1ToMuMu_Count = 0;
+   eventHasUpsi2ToMuMu_Count = 0;
+   eventHasUpsi3ToMuMu_Count = 0;
+   eventHasZToMuMu_Count = 0;
+   eventHasZUpsi1To4Mu_Count = 0;
+   eventHasZUpsi2To4Mu_Count = 0;
+   eventHasZUpsi3To4Mu_Count = 0;
+   eventHasZUpsiNTo4MuButNoCandFound_Count = 0;
+   eventHasZUpsiNTo4MuCandFound_Count = 0;
+   truth_muon_pt = 0;
+   truth_muon_eta = 0;
+   truth_muon_phi = 0;
+   truth_muHasUpsi1Ancestor = 0;
+   truth_muHasZAncestor = 0;
+   truth_muHasChib0_1PAncestor = 0;
+   truth_muHasChib1_1PAncestor = 0;
+   truth_muHasChib2_1PAncestor = 0;
+   truth_muHasUpsi2Ancestor = 0;
+   truth_muHasUpsi3Ancestor = 0;
+   truth_muHasUpsi1FromUpsi2Ancestor = 0;
+   truth_muHasUpsi1FromUpsi3Ancestor = 0;
+   truth_muHasUpsi2FromUpsi3Ancestor = 0;
+   truth_muHasUpsi1FromUpsi2FromUpsi3Ancestor = 0;
+   truth_eventHasZUpsiNTo4Mu = 0;
+   truth_eventHasZUpsi1To4Mu = 0;
+   truth_eventHasZUpsi2To4Mu = 0;
+   truth_eventHasZUpsi3To4Mu = 0;
+   denominator_ZplusY = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -465,6 +552,35 @@ void treeMC::Init(TTree *tree)
    fChain->SetBranchAddress("mc_run_number", &mc_run_number, &b_mc_run_number);
    fChain->SetBranchAddress("mc_lumi_section", &mc_lumi_section, &b_mc_lumi_section);
    fChain->SetBranchAddress("eventHasZUpsiNTo4Mu_Count", &eventHasZUpsiNTo4Mu_Count, &b_eventHasZUpsiNTo4Mu_Count);
+   fChain->SetBranchAddress("eventDoesNotHaveZUpsiNTo4Mu_Count", &eventDoesNotHaveZUpsiNTo4Mu_Count, &b_eventDoesNotHaveZUpsiNTo4Mu_Count);
+   fChain->SetBranchAddress("eventHasUpsi1ToMuMu_Count", &eventHasUpsi1ToMuMu_Count, &b_eventHasUpsi1ToMuMu_Count);
+   fChain->SetBranchAddress("eventHasUpsi2ToMuMu_Count", &eventHasUpsi2ToMuMu_Count, &b_eventHasUpsi2ToMuMu_Count);
+   fChain->SetBranchAddress("eventHasUpsi3ToMuMu_Count", &eventHasUpsi3ToMuMu_Count, &b_eventHasUpsi3ToMuMu_Count);
+   fChain->SetBranchAddress("eventHasZToMuMu_Count", &eventHasZToMuMu_Count, &b_eventHasZToMuMu_Count);
+   fChain->SetBranchAddress("eventHasZUpsi1To4Mu_Count", &eventHasZUpsi1To4Mu_Count, &b_eventHasZUpsi1To4Mu_Count);
+   fChain->SetBranchAddress("eventHasZUpsi2To4Mu_Count", &eventHasZUpsi2To4Mu_Count, &b_eventHasZUpsi2To4Mu_Count);
+   fChain->SetBranchAddress("eventHasZUpsi3To4Mu_Count", &eventHasZUpsi3To4Mu_Count, &b_eventHasZUpsi3To4Mu_Count);
+   fChain->SetBranchAddress("eventHasZUpsiNTo4MuButNoCandFound_Count", &eventHasZUpsiNTo4MuButNoCandFound_Count, &b_eventHasZUpsiNTo4MuButNoCandFound_Count);
+   fChain->SetBranchAddress("eventHasZUpsiNTo4MuCandFound_Count", &eventHasZUpsiNTo4MuCandFound_Count, &b_eventHasZUpsiNTo4MuCandFound_Count);
+   fChain->SetBranchAddress("truth_muon_pt", &truth_muon_pt, &b_truth_muon_pt);
+   fChain->SetBranchAddress("truth_muon_eta", &truth_muon_eta, &b_truth_muon_eta);
+   fChain->SetBranchAddress("truth_muon_phi", &truth_muon_phi, &b_truth_muon_phi);
+   fChain->SetBranchAddress("truth_muHasUpsi1Ancestor", &truth_muHasUpsi1Ancestor, &b_truth_muHasUpsi1Ancestor);
+   fChain->SetBranchAddress("truth_muHasZAncestor", &truth_muHasZAncestor, &b_truth_muHasZAncestor);
+   fChain->SetBranchAddress("truth_muHasChib0_1PAncestor", &truth_muHasChib0_1PAncestor, &b_truth_muHasChib0_1PAncestor);
+   fChain->SetBranchAddress("truth_muHasChib1_1PAncestor", &truth_muHasChib1_1PAncestor, &b_truth_muHasChib1_1PAncestor);
+   fChain->SetBranchAddress("truth_muHasChib2_1PAncestor", &truth_muHasChib2_1PAncestor, &b_truth_muHasChib2_1PAncestor);
+   fChain->SetBranchAddress("truth_muHasUpsi2Ancestor", &truth_muHasUpsi2Ancestor, &b_truth_muHasUpsi2Ancestor);
+   fChain->SetBranchAddress("truth_muHasUpsi3Ancestor", &truth_muHasUpsi3Ancestor, &b_truth_muHasUpsi3Ancestor);
+   fChain->SetBranchAddress("truth_muHasUpsi1FromUpsi2Ancestor", &truth_muHasUpsi1FromUpsi2Ancestor, &b_truth_muHasUpsi1FromUpsi2Ancestor);
+   fChain->SetBranchAddress("truth_muHasUpsi1FromUpsi3Ancestor", &truth_muHasUpsi1FromUpsi3Ancestor, &b_truth_muHasUpsi1FromUpsi3Ancestor);
+   fChain->SetBranchAddress("truth_muHasUpsi2FromUpsi3Ancestor", &truth_muHasUpsi2FromUpsi3Ancestor, &b_truth_muHasUpsi2FromUpsi3Ancestor);
+   fChain->SetBranchAddress("truth_muHasUpsi1FromUpsi2FromUpsi3Ancestor", &truth_muHasUpsi1FromUpsi2FromUpsi3Ancestor, &b_truth_muHasUpsi1FromUpsi2FromUpsi3Ancestor);
+   fChain->SetBranchAddress("truth_eventHasZUpsiNTo4Mu", &truth_eventHasZUpsiNTo4Mu, &b_truth_eventHasZUpsiNTo4Mu);
+   fChain->SetBranchAddress("truth_eventHasZUpsi1To4Mu", &truth_eventHasZUpsi1To4Mu, &b_truth_eventHasZUpsi1To4Mu);
+   fChain->SetBranchAddress("truth_eventHasZUpsi2To4Mu", &truth_eventHasZUpsi2To4Mu, &b_truth_eventHasZUpsi2To4Mu);
+   fChain->SetBranchAddress("truth_eventHasZUpsi3To4Mu", &truth_eventHasZUpsi3To4Mu, &b_truth_eventHasZUpsi3To4Mu);
+   fChain->SetBranchAddress("denominator_ZplusY", &denominator_ZplusY, &b_denominator_ZplusY);
    Notify();
 }
 

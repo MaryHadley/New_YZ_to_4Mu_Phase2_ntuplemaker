@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Wed Apr 20 03:54:36 2022 by ROOT version 6.14/09
+// Thu Feb  9 14:07:13 2023 by ROOT version 6.14/09
 // from TTree tree/tree
-// found on file: ZYto4Mu_Zto4Mu_pTCut3_MC_Bjorn_20April2022_inputFileIs_MC_DPS_2018_YZ_04A4F969-2F02-F24D-9BA7-2FAB6D708CB6.root
+// found on file: myNewFile.root
 //////////////////////////////////////////////////////////
 
 #ifndef tree_h
@@ -13,6 +13,7 @@
 #include <TFile.h>
 
 // Header file for the classes stored in the TTree if any.
+#include "vector"
 #include "vector"
 #include "vector"
 #include "vector"
@@ -33,10 +34,14 @@ public :
    vector<unsigned int> *lumi_section;
    vector<unsigned int> *bunch_crossing;
    vector<unsigned int> *orbit_number;
+   vector<unsigned int> *event_number_of_event;
+   vector<unsigned int> *run_number_of_event;
+   vector<unsigned int> *lumi_section_of_event;
    vector<double>  *rho;
    vector<bool>    *flagZplusY;
    vector<bool>    *flagZOnly;
    vector<double>  *lepton1_pt;
+   vector<vector<string> > *lepton1_trigger_filters;
    vector<double>  *lepton1_eta;
    vector<double>  *lepton1_phi;
    vector<double>  *lepton1_charge;
@@ -154,6 +159,10 @@ public :
    vector<vector<double> > *dimuon2vtx_yposError;
    vector<vector<double> > *dimuon1vtx_zposError;
    vector<vector<double> > *dimuon2vtx_zposError;
+   vector<vector<double> > *dimuon1vtx_chi2;
+   vector<vector<double> > *dimuon2vtx_chi2;
+   vector<vector<int> > *dimuon1vtx_ndof;
+   vector<vector<int> > *dimuon2vtx_ndof;
    vector<double>  *dimuon1lxy;
    vector<double>  *dimuon2lxy;
    vector<double>  *dimuon1lxysig;
@@ -181,12 +190,22 @@ public :
    vector<double>  *big4MuEta;
    vector<double>  *big4MuPhi;
    vector<double>  *big4MuPt;
+   vector<double>  *big4MuVtx_chi2;
+   vector<int>     *big4MuVtx_ndof;
+   vector<double>  *big4MuVtx_xpos;
+   vector<double>  *big4MuVtx_ypos;
+   vector<double>  *big4MuVtx_zpos;
+   vector<double>  *big4MuVtx_xposError;
+   vector<double>  *big4MuVtx_yposError;
+   vector<double>  *big4MuVtx_zposError;
+   vector<int>     *numZplusYCandInEvent;
    vector<int>     *quadHasHowManyTrigMatches;
    vector<int>     *sum4LepCharges;
    vector<double>  *lepton1_validHits;
    vector<double>  *lepton2_validHits;
    vector<double>  *lepton3_validHits;
    vector<double>  *lepton4_validHits;
+   Bool_t          denominator_ZplusY;
 
    // List of branches
    TBranch        *b_event_number;   //!
@@ -194,10 +213,14 @@ public :
    TBranch        *b_lumi_section;   //!
    TBranch        *b_bunch_crossing;   //!
    TBranch        *b_orbit_number;   //!
+   TBranch        *b_event_number_of_event;   //!
+   TBranch        *b_run_number_of_event;   //!
+   TBranch        *b_lumi_section_of_event;   //!
    TBranch        *b_rho;   //!
    TBranch        *b_flagZplusY;   //!
    TBranch        *b_flagZOnly;   //!
    TBranch        *b_lepton1_pt;   //!
+   TBranch        *b_lepton1_trigger_filters;   //!
    TBranch        *b_lepton1_eta;   //!
    TBranch        *b_lepton1_phi;   //!
    TBranch        *b_lepton1_charge;   //!
@@ -315,6 +338,10 @@ public :
    TBranch        *b_dimuon2vtx_yposError;   //!
    TBranch        *b_dimuon1vtx_zposError;   //!
    TBranch        *b_dimuon2vtx_zposError;   //!
+   TBranch        *b_dimuon1vtx_chi2;   //!
+   TBranch        *b_dimuon2vtx_chi2;   //!
+   TBranch        *b_dimuon1vtx_ndof;   //!
+   TBranch        *b_dimuon2vtx_ndof;   //!
    TBranch        *b_dimuon1lxy;   //!
    TBranch        *b_dimuon2lxy;   //!
    TBranch        *b_dimuon1lxysig;   //!
@@ -342,12 +369,22 @@ public :
    TBranch        *b_big4MuEta;   //!
    TBranch        *b_big4MuPhi;   //!
    TBranch        *b_big4MuPt;   //!
+   TBranch        *b_big4MuVtx_chi2;   //!
+   TBranch        *b_big4MuVtx_ndof;   //!
+   TBranch        *b_big4MuVtx_xpos;   //!
+   TBranch        *b_big4MuVtx_ypos;   //!
+   TBranch        *b_big4MuVtx_zpos;   //!
+   TBranch        *b_big4MuVtx_xposError;   //!
+   TBranch        *b_big4MuVtx_yposError;   //!
+   TBranch        *b_big4MuVtx_zposError;   //!
+   TBranch        *b_numZplusYCandInEvent;   //!
    TBranch        *b_quadHasHowManyTrigMatches;   //!
    TBranch        *b_sum4LepCharges;   //!
    TBranch        *b_lepton1_validHits;   //!
    TBranch        *b_lepton2_validHits;   //!
    TBranch        *b_lepton3_validHits;   //!
    TBranch        *b_lepton4_validHits;   //!
+   TBranch        *b_denominator_ZplusY;   //!
 
    tree(TTree *tree=0);
    virtual ~tree();
@@ -368,12 +405,11 @@ public :
 // // if parameter tree is not specified (or zero), connect the file
 // // used to generate this class and read the Tree.
 //    if (tree == 0) {
-//       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("ZYto4Mu_Zto4Mu_pTCut3_MC_Bjorn_20April2022_inputFileIs_MC_DPS_2018_YZ_04A4F969-2F02-F24D-9BA7-2FAB6D708CB6.root");
+//       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("myNewFile.root");
 //       if (!f || !f->IsOpen()) {
-//          f = new TFile("ZYto4Mu_Zto4Mu_pTCut3_MC_Bjorn_20April2022_inputFileIs_MC_DPS_2018_YZ_04A4F969-2F02-F24D-9BA7-2FAB6D708CB6.root");
+//          f = new TFile("myNewFile.root");
 //       }
-//       TDirectory * dir = (TDirectory*)f->Get("ZYto4Mu_Zto4Mu_pTCut3_MC_Bjorn_20April2022_inputFileIs_MC_DPS_2018_YZ_04A4F969-2F02-F24D-9BA7-2FAB6D708CB6.root:/ZmuonAnalyzer");
-//       dir->GetObject("tree",tree);
+//       f->GetObject("tree",tree);
 // 
 //    }
 //    Init(tree);
@@ -392,7 +428,6 @@ tree::tree(TTree *tree) : fChain(0)
    }
    Init(tree);
 }
-
 
 tree::~tree()
 {
@@ -435,10 +470,14 @@ void tree::Init(TTree *tree)
    lumi_section = 0;
    bunch_crossing = 0;
    orbit_number = 0;
+   event_number_of_event = 0;
+   run_number_of_event = 0;
+   lumi_section_of_event = 0;
    rho = 0;
    flagZplusY = 0;
    flagZOnly = 0;
    lepton1_pt = 0;
+   lepton1_trigger_filters = 0;
    lepton1_eta = 0;
    lepton1_phi = 0;
    lepton1_charge = 0;
@@ -556,6 +595,10 @@ void tree::Init(TTree *tree)
    dimuon2vtx_yposError = 0;
    dimuon1vtx_zposError = 0;
    dimuon2vtx_zposError = 0;
+   dimuon1vtx_chi2 = 0;
+   dimuon2vtx_chi2 = 0;
+   dimuon1vtx_ndof = 0;
+   dimuon2vtx_ndof = 0;
    dimuon1lxy = 0;
    dimuon2lxy = 0;
    dimuon1lxysig = 0;
@@ -583,6 +626,15 @@ void tree::Init(TTree *tree)
    big4MuEta = 0;
    big4MuPhi = 0;
    big4MuPt = 0;
+   big4MuVtx_chi2 = 0;
+   big4MuVtx_ndof = 0;
+   big4MuVtx_xpos = 0;
+   big4MuVtx_ypos = 0;
+   big4MuVtx_zpos = 0;
+   big4MuVtx_xposError = 0;
+   big4MuVtx_yposError = 0;
+   big4MuVtx_zposError = 0;
+   numZplusYCandInEvent = 0;
    quadHasHowManyTrigMatches = 0;
    sum4LepCharges = 0;
    lepton1_validHits = 0;
@@ -600,10 +652,14 @@ void tree::Init(TTree *tree)
    fChain->SetBranchAddress("lumi_section", &lumi_section, &b_lumi_section);
    fChain->SetBranchAddress("bunch_crossing", &bunch_crossing, &b_bunch_crossing);
    fChain->SetBranchAddress("orbit_number", &orbit_number, &b_orbit_number);
+   fChain->SetBranchAddress("event_number_of_event", &event_number_of_event, &b_event_number_of_event);
+   fChain->SetBranchAddress("run_number_of_event", &run_number_of_event, &b_run_number_of_event);
+   fChain->SetBranchAddress("lumi_section_of_event", &lumi_section_of_event, &b_lumi_section_of_event);
    fChain->SetBranchAddress("rho", &rho, &b_rho);
    fChain->SetBranchAddress("flagZplusY", &flagZplusY, &b_flagZplusY);
    fChain->SetBranchAddress("flagZOnly", &flagZOnly, &b_flagZOnly);
    fChain->SetBranchAddress("lepton1_pt", &lepton1_pt, &b_lepton1_pt);
+   fChain->SetBranchAddress("lepton1_trigger_filters", &lepton1_trigger_filters, &b_lepton1_trigger_filters);
    fChain->SetBranchAddress("lepton1_eta", &lepton1_eta, &b_lepton1_eta);
    fChain->SetBranchAddress("lepton1_phi", &lepton1_phi, &b_lepton1_phi);
    fChain->SetBranchAddress("lepton1_charge", &lepton1_charge, &b_lepton1_charge);
@@ -721,6 +777,10 @@ void tree::Init(TTree *tree)
    fChain->SetBranchAddress("dimuon2vtx_yposError", &dimuon2vtx_yposError, &b_dimuon2vtx_yposError);
    fChain->SetBranchAddress("dimuon1vtx_zposError", &dimuon1vtx_zposError, &b_dimuon1vtx_zposError);
    fChain->SetBranchAddress("dimuon2vtx_zposError", &dimuon2vtx_zposError, &b_dimuon2vtx_zposError);
+   fChain->SetBranchAddress("dimuon1vtx_chi2", &dimuon1vtx_chi2, &b_dimuon1vtx_chi2);
+   fChain->SetBranchAddress("dimuon2vtx_chi2", &dimuon2vtx_chi2, &b_dimuon2vtx_chi2);
+   fChain->SetBranchAddress("dimuon1vtx_ndof", &dimuon1vtx_ndof, &b_dimuon1vtx_ndof);
+   fChain->SetBranchAddress("dimuon2vtx_ndof", &dimuon2vtx_ndof, &b_dimuon2vtx_ndof);
    fChain->SetBranchAddress("dimuon1lxy", &dimuon1lxy, &b_dimuon1lxy);
    fChain->SetBranchAddress("dimuon2lxy", &dimuon2lxy, &b_dimuon2lxy);
    fChain->SetBranchAddress("dimuon1lxysig", &dimuon1lxysig, &b_dimuon1lxysig);
@@ -748,12 +808,22 @@ void tree::Init(TTree *tree)
    fChain->SetBranchAddress("big4MuEta", &big4MuEta, &b_big4MuEta);
    fChain->SetBranchAddress("big4MuPhi", &big4MuPhi, &b_big4MuPhi);
    fChain->SetBranchAddress("big4MuPt", &big4MuPt, &b_big4MuPt);
+   fChain->SetBranchAddress("big4MuVtx_chi2", &big4MuVtx_chi2, &b_big4MuVtx_chi2);
+   fChain->SetBranchAddress("big4MuVtx_ndof", &big4MuVtx_ndof, &b_big4MuVtx_ndof);
+   fChain->SetBranchAddress("big4MuVtx_xpos", &big4MuVtx_xpos, &b_big4MuVtx_xpos);
+   fChain->SetBranchAddress("big4MuVtx_ypos", &big4MuVtx_ypos, &b_big4MuVtx_ypos);
+   fChain->SetBranchAddress("big4MuVtx_zpos", &big4MuVtx_zpos, &b_big4MuVtx_zpos);
+   fChain->SetBranchAddress("big4MuVtx_xposError", &big4MuVtx_xposError, &b_big4MuVtx_xposError);
+   fChain->SetBranchAddress("big4MuVtx_yposError", &big4MuVtx_yposError, &b_big4MuVtx_yposError);
+   fChain->SetBranchAddress("big4MuVtx_zposError", &big4MuVtx_zposError, &b_big4MuVtx_zposError);
+   fChain->SetBranchAddress("numZplusYCandInEvent", &numZplusYCandInEvent, &b_numZplusYCandInEvent);
    fChain->SetBranchAddress("quadHasHowManyTrigMatches", &quadHasHowManyTrigMatches, &b_quadHasHowManyTrigMatches);
    fChain->SetBranchAddress("sum4LepCharges", &sum4LepCharges, &b_sum4LepCharges);
    fChain->SetBranchAddress("lepton1_validHits", &lepton1_validHits, &b_lepton1_validHits);
    fChain->SetBranchAddress("lepton2_validHits", &lepton2_validHits, &b_lepton2_validHits);
    fChain->SetBranchAddress("lepton3_validHits", &lepton3_validHits, &b_lepton3_validHits);
    fChain->SetBranchAddress("lepton4_validHits", &lepton4_validHits, &b_lepton4_validHits);
+   fChain->SetBranchAddress("denominator_ZplusY", &denominator_ZplusY, &b_denominator_ZplusY);
    Notify();
 }
 
