@@ -34,7 +34,8 @@ int myAdd(int a, int b){
 void run(string file){//, string file2){
 
   // l o a d   t h e   t r e e s 
-  root_file = new TFile(file.c_str(),"READ");
+//  root_file = new TFile(file.c_str(),"READ");
+  root_file = TFile::Open(file.c_str(),"READ");
   TREE   = new tree((TTree*)root_file->Get("tree"));
   TREEMC = new treeMC((TTree*)root_file->Get("treemc"));
   
@@ -118,9 +119,9 @@ void run(string file){//, string file2){
   double Z_mass_true = 91.1876; //from PDG, 4 October 2022
   
   //non-boolean flags
-   int triggerYear = 2016; //options are 2016, 2017, 2018
-//  int triggerYear = 2017;
-//  int triggerYear = 2018;
+ //  int triggerYear = 2016; //options are 2016, 2017, 2018
+ // int triggerYear = 2017;
+  int triggerYear = 2018;
   
   std::cout << "Using triggers for year:  " << triggerYear << std::endl;
   std::cout << "//////////////////////" << std::endl;
@@ -315,7 +316,7 @@ void run(string file){//, string file2){
  
    
   
-  TFile *ntuple = new TFile("UPDATED_ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_12July2022_Run2016_Total.root", "RECREATE");
+  TFile *ntuple = new TFile("UPDATED_ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_myNewFile.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -376,6 +377,7 @@ void run(string file){//, string file2){
     (TREE->fChain)->GetEntry(iEntry);
      eventCounter += 1;
     // std::cout << "event(s) processed:  " << eventCounter << std::endl; 
+   // std:cout << "TREE->denominator_ZplusY" << TREE->denominator_ZplusY << std::endl;
     if (eventCounter % 1000 == 0){
       //std::cout << "Processed  " << eventCounter << "  Events" << std::endl; 
       std::cout << "\r" << eventCounter << "  Events Processed" << flush;
