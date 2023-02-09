@@ -13,7 +13,7 @@ cmsenv
 #To run Z + Y --> 4 mu looper:   
 root -l -b  
 .L new_workInProgress_clean_flexible_loop_ZplusY.C++  
-run("< nameOfFil e>.root")   
+run("< nameOfFile >.root")   
 
 #To run Z->4 mu looper  
 root -l -b  
