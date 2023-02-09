@@ -8,6 +8,7 @@ cd New_YZ_to_4Mu_Phase2_ntuplemaker
 mv * ..  
 cd ..  
 rm -rf New_YZ_to_4Mu_Phase2_ntuplemaker   
+cmsenv
 
 #To run Z + Y --> 4 mu looper:   
 root -l -b  
