@@ -131,7 +131,7 @@ void run(string file){//, string file2){
   
   bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
   bool applyIsoToUpsiMu = true;
-  bool doRecoToTrigMuMatching = false;
+//  bool doRecoToTrigMuMatching = false;
   
   if (!doMCTruthMatching){
      std::cout << "NOT performing MC truth matching" << std::endl;
@@ -154,15 +154,15 @@ void run(string file){//, string file2){
     std::cout << "/////////////////////////////////////////////////" << std::endl;
   }
   
-  if (!doRecoToTrigMuMatching){
-    std::cout << "NOT including reco to trigger muon matching cut" << std::endl;
-    std::cout << "///////////////////////////////////////////////" << std::endl;
-  }
-  
-  if (doRecoToTrigMuMatching){
-    std::cout << "INCLUDING reco to trigger muon matching cut" << std::endl;
-    std::cout << "///////////////////////////////////////////" << std::endl;
-  }
+ //  if (!doRecoToTrigMuMatching){
+//     std::cout << "NOT including reco to trigger muon matching cut" << std::endl;
+//     std::cout << "///////////////////////////////////////////////" << std::endl;
+//   }
+//   
+//   if (doRecoToTrigMuMatching){
+//     std::cout << "INCLUDING reco to trigger muon matching cut" << std::endl;
+//     std::cout << "///////////////////////////////////////////" << std::endl;
+//   }
   
   
   
@@ -316,7 +316,7 @@ void run(string file){//, string file2){
  
    
   
-  TFile *ntuple = new TFile("effStudies_ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_myNewFile2017", "RECREATE");
+  TFile *ntuple = new TFile("effStudies_ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_myNewFile2017.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -395,6 +395,7 @@ void run(string file){//, string file2){
        continue; //Only consider events that meet the criteria for being in the denominator_ZplusY
      }
      
+     //fill first bin of cutflow histo here, this will be the total number of events considered
      denominator_ZplusY_counter++;
      //  if (eventCounter > 5){
 //         break;
@@ -659,7 +660,8 @@ void run(string file){//, string file2){
    if (event_fails_trigger){
      continue;
    }
-    
+   //fill second bin of cutflow histo here, these will be events that passed the trigger cut. Note this number will probably be slightly different
+   //when we run with the 2016 vs. 2017 vs. 2018 triggers.
     
    auto big4MuVtxProbVec = TREE->big4MuVtx;
    //std::cout << "Reached checkpoint 0" << std::endl;
@@ -859,6 +861,9 @@ void run(string file){//, string file2){
       //Note that we do not have a further requirement that flagZOnly == 0. We are giving priority to Z + Y quads over ZOnly quads
       //In the ZOnly looper, we require that a quad be flagged as ZOnly and that the quad NOT be flagged as Z + Y, i.e. flagZOnly must equal 1 
       // and flagZplusY must equal 0
+      
+      //Fill the third bin of the cutflow histo here. TO CHECK: does this cut do anything now that we have said denominator_ZplusY must be true to even get
+      //into this histogram
             
       h_big4MuVtxProb_before_big4MuVtx_Prob_Cut->Fill(TREE->big4MuVtx->at(i)); //fill it  before we cut on it
       // if (TREE->big4MuVtx->at(i) < 0) {
@@ -873,6 +878,7 @@ void run(string file){//, string file2){
       
       h_cutflow_allQuadCuts->Fill(3); // here are the quads that survive the prob cut
       
+      //Fill the fourth bin of the cutflow histo here, this is after the four muon vertex prob cut
       
  //     std:: cout << "Checking what TMath::Prob gives, let's try TMath::Prob(3.84, 1)   " << TMath::Prob(3.84, 1) << std::endl; //https://en.wikipedia.org/wiki/Chi-square_distribution //confirmed that this gives out what we think it should, aka this returns .05
 //       std:: cout << "Checking what TMath::Prob gives, let's try TMath::Prob(3.32, 9)   " << TMath::Prob(3.32, 9) << std::endl;
@@ -968,13 +974,16 @@ void run(string file){//, string file2){
       
    //   h_cutflow_allQuadCuts->Fill(4); //here are the quads that survive pfIso cut
    
+   //Marked for removal!!
       //  std::cout << "TREE->quadHasHowManyTrigMatches->at(i)  " << TREE->quadHasHowManyTrigMatches->at(i) << std::endl;
-      if (doRecoToTrigMuMatching){
-        if (TREE->quadHasHowManyTrigMatches->at(i) < 2) {
-          continue;
-        }
-      }
+    //   if (doRecoToTrigMuMatching){
+//         if (TREE->quadHasHowManyTrigMatches->at(i) < 2) {
+//           continue;
+//         }
+//       }
        h_cutflow_allQuadCuts->Fill(4); //here are the quads that survive the trigger matching requirement 
+     
+     //the above doRecoToTrigMatching section is never used and I should just get rid of it
      
        //////////////////////////////////////////////
       //end cuts involving overall quad /////////////
@@ -1027,6 +1036,8 @@ void run(string file){//, string file2){
              }
             h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(2);
             
+            //fill the fifth bin of the cutflow histo here. This is after the leptons from Z pT cuts
+            
             if (fabs(lepton1.Eta()) > mu_from_Z_eta_Cut || fabs(lepton2.Eta()) > mu_from_Z_eta_Cut){
                 // std::cout << "FAILED Z mu eta Cuts!" << std::endl; 
                 FailureCount += 1;
@@ -1034,6 +1045,7 @@ void run(string file){//, string file2){
             }
             h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(3);
             //// std::cout << "TREE->lepton1_isTightMuon->at(i): " << TREE->lepton1_isTightMuon->at(i) << std::endl;
+         //Fill the sixth bin of the cutflow histo here. This is after the leptons from Z eta cuts
          
            if (TREE->lepton1_isTightMuon->at(i) + TREE->lepton2_isTightMuon->at(i) != 2){  //both of them need to be tight, which has a value of 1, 1 +1 =2 
                // std::cout << "AT LEAST ONE OF THE MUS FROM A Z WAS NOT TIGHT, FAILED THE Z->MU MU BOTH MU MOST BE TIGHT CUT" << std::endl;
@@ -1042,6 +1054,7 @@ void run(string file){//, string file2){
            
            } 
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(4);
+           //Fill the seventh bin of the cutflow histo here. This is after the Tight muon for muons from Z requirement
            
            if (fabs(TREE->lepton1_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut || fabs(TREE->lepton2_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut){
                // std::cout << "FAILED mu froom Z IP sig cut!" << std::endl;
@@ -1049,12 +1062,15 @@ void run(string file){//, string file2){
                continue; 
             }
             h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(5);
+            //Fill the eighth bin of the cutflow histo here. This is after the muons from Z 3D IP sig cut.
             
            if (pfIso_lep1 > pfIso_Cut_Mu_from_Z || pfIso_lep2 > pfIso_Cut_Mu_from_Z){
               // std::cout << "FAILED particle flow iso cut" << std::endl;
               pfIso_Fail_Count += 1;
               continue;
            }
+           
+           //Fill the ninth bin of the cutflow histo here. This is after the pfIso for the muons from the Z cut.
            
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(6);
            
@@ -1063,6 +1079,7 @@ void run(string file){//, string file2){
                continue; 
            }
            
+           //Fill the tenth bin of the cutflow histo here. This is after the pair-wise muons from Z cut
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(7);
            
                       
@@ -1076,6 +1093,7 @@ void run(string file){//, string file2){
                continue; 
            }
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(8);
+           //Fill the eleventh bin of the cutflow histo here. This is after the muons from upsi pT cut
            
            if (fabs(lepton3.Eta()) > mu_from_upsi_eta_Cut || fabs(lepton4.Eta()) > mu_from_upsi_eta_Cut){
                // std::cout << "FAILED upsi  mu eta cuts!" << std::endl; 
@@ -1083,6 +1101,7 @@ void run(string file){//, string file2){
                continue; 
            }
            
+           //Fill the twelfth bin of the cutflow histo here. This is after the muons from upsi eta cut.
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(9);
            
            if (  (lepton3 + lepton4).M()    < upsi_mass_low_phase2 || (lepton3 + lepton4).M() > upsi_mass_high_phase2 ){
@@ -1091,6 +1110,7 @@ void run(string file){//, string file2){
                continue;  
            }
           
+          //Fill the thirteenth bin of the cutflow histo here. This is after the tightening of the upsi mass requirement.
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(10);
           
            if (TREE->lepton3_isSoftMuon->at(i) + TREE->lepton4_isSoftMuon->at(i) !=2){
@@ -1098,7 +1118,7 @@ void run(string file){//, string file2){
                FailureCount += 1; 
                continue; 
            }
-           
+           //Fill the fourteenth bin of the cutflow histo here. This is after the requirement that muons from the upsi be soft.
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(11);
           // if ( fabs(lepton3.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton4.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
                if (   fabs((lepton3 + lepton4).Rapidity()) > upsi_RAPIDITY_Cut ){
@@ -1107,6 +1127,7 @@ void run(string file){//, string file2){
                continue; 
            }
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(12);
+         //Fill the fifteenth bin of the cutflow histo here. This is after the upsi rapidity cut.
         
            if (TREE->dimuon2vtx->at(i).at(0) < mu_mu_from_upsi_Prob_Cut){
                // std::cout << "FAILED mu_mu_from_upsi_Prob_Cut" << std::endl;
@@ -1114,14 +1135,14 @@ void run(string file){//, string file2){
            }
            
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(13);
-           
+           //Fill the sixteenth bin of the cutflow histo here. This is after the pair-wise muons from upsi probability cut.
            if (applyIsoToUpsiMu){
              if (pfIso_lep3 > pfIso_Cut_Mu_from_Upsi || pfIso_lep4 > pfIso_Cut_Mu_from_Upsi){
                continue;
            
              }
            }
-           
+           //Fill the seventeenth bin of the cutflow histo here. This is after the muons from the upsi pfIso cut.
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(14);
            
            TVector3 dimuon1vtx_vec, dimuon2vtx_vec;
@@ -1496,33 +1517,42 @@ void run(string file){//, string file2){
                 continue; 
             }
             
+            //Fill bin 5, after the mu from Z pT cuts
+            
             if (fabs(lepton3.Eta()) > mu_from_Z_eta_Cut || fabs(lepton4.Eta()) > mu_from_Z_eta_Cut){
                 // std::cout << "FAILED Z mu eta Cuts!" << std::endl; 
                 continue;
             }
             
+            //Fill bin 6, after the mu from Z eta cuts
             if (TREE->lepton3_isTightMuon->at(i) + TREE->lepton4_isTightMuon->at(i) != 2){  //both of them need to be tight, which has a value of 1, 1 +1 =2 
                // std::cout << "AT LEAST ONE OF THE MUS FROM A Z WAS NOT TIGHT, FAILED THE Z->MU MU BOTH MU MOST BE TIGHT CUT" << std::endl;
                continue;
            
            } 
            
+           //Fill bin 7, after the mu from Z must be tight requirement
+           
             if (fabs(TREE->lepton3_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut || fabs(TREE->lepton4_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut){
                // std::cout << "FAILED mu froom Z IP sig cut!" << std::endl;
                continue; 
             }
+            
+            //Fill bin 8, after the mu from Z 3D IP Sig cuts
             
             if (pfIso_lep3 > pfIso_Cut_Mu_from_Z || pfIso_lep4 > pfIso_Cut_Mu_from_Z){
               // std::cout << "FAILED particle flow iso cut" << std::endl;
               pfIso_Fail_Count += 1;
               continue;
            }
-            
+            //Fill bin 9, after the mu from Z pfIso cuts
             
             if (TREE->dimuon2vtx->at(i).at(0) < mu_mu_from_Z_Prob_Cut){
                // std::cout << "FAILED mu_mu_from_Z_Prob_Cut" << std::endl;
                continue; 
             }
+            
+            //Fill bin 10, after the pair-wise mu from Z vertex prob cut
             
             //End Z cuts
             
@@ -1531,21 +1561,26 @@ void run(string file){//, string file2){
                 // std::cout << "FAILED upsi mu Pt cuts!" << std::endl;
                 continue;
             }
+            //Fill bin 11, after the mu from upsi pT cuts
             
             if (fabs(lepton1.Eta()) > mu_from_upsi_eta_Cut || fabs(lepton2.Eta()) > mu_from_upsi_eta_Cut){
                 // std::cout << "FAILED upsi mu eta cuts!" << std::endl; 
                 continue;
             }
+            //Fill bin 12, after the mu from upsi eta cuts
             
             if ( (lepton1 + lepton2).M() < upsi_mass_low_phase2 || (lepton1 + lepton2).M() > upsi_mass_high_phase2 ){
                 // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl;
                 continue; 
             }
+            //Fill bin 13, after the tightening of the upsi mass window is applied
             
             if (TREE->lepton1_isSoftMuon->at(i) + TREE->lepton2_isSoftMuon->at(i) !=2){
                // std::cout << "FAILED mu from upsi must be soft cut" << std::endl;
                continue; 
            }
+            
+            //Fill bin 14, after the mu from upsi must be soft cut
             
             if //( fabs(lepton1.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton2.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
                 
@@ -1555,16 +1590,20 @@ void run(string file){//, string file2){
                 continue;           
             }
             
+            //Fill bin 15, after the upsi rapidity cut
             if (TREE->dimuon1vtx->at(i).at(0) < mu_mu_from_upsi_Prob_Cut){
                 // std::cout << "FAILED mu_mu_from_upsi_Prob_Cut" << std::endl;
                 continue; 
             }
             
+            //Fill bin 16, after the pair-wise mu from upsi vertex prob cut
             if (applyIsoToUpsiMu){
               if (pfIso_lep1 > pfIso_Cut_Mu_from_Upsi || pfIso_lep2 > pfIso_Cut_Mu_from_Upsi){
                 continue; 
               }
             }
+            
+            //Fill bin 17, after the pfIso for upsi mu cut is applied
             TVector3 dimuon1vtx_vec, dimuon2vtx_vec;
             dimuon1vtx_vec.SetXYZ(TREE->dimuon1vtx_xpos->at(i).at(0), TREE->dimuon1vtx_ypos->at(i).at(0), TREE->dimuon1vtx_zpos->at(i).at(0));
             dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(0), TREE->dimuon2vtx_ypos->at(i).at(0), TREE->dimuon2vtx_zpos->at(i).at(0));
@@ -1912,34 +1951,38 @@ void run(string file){//, string file2){
                 // std::cout << "FAILED Z mu Pt Cuts" << std::endl;
                 continue;
              }    
+            //Fill bin 5, after the mu from Z pT cuts
             
             if (fabs(lepton1.Eta()) > mu_from_Z_eta_Cut || fabs(lepton3.Eta()) > mu_from_Z_eta_Cut){
                 // std::cout << "FAILED Z mu eta Cuts!" << std::endl; 
                 continue;
             }
+            //Fill bin 6, after the mu from Z eta cuts
             
             if (TREE->lepton1_isTightMuon->at(i) + TREE->lepton3_isTightMuon->at(i) != 2){  //both of them need to be tight, tight has a value of 1, 1 +1 =2 
                // std::cout << "AT LEAST ONE OF THE MUS FROM A Z WAS NOT TIGHT, FAILED THE Z->MU MU BOTH MU MOST BE TIGHT CUT" << std::endl;
                continue;
            
            } 
+           //Fill bin 7, after the mu from Z must be Tight requirement applied
            
             if (fabs(TREE->lepton1_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut || fabs(TREE->lepton3_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut){
                // std::cout << "FAILED mu froom Z IP sig cut!" << std::endl;
                continue; 
             }
             
+            //Fill bin 8, after the mu from Z IP sig cuts applied
             if (pfIso_lep1 > pfIso_Cut_Mu_from_Z || pfIso_lep3 > pfIso_Cut_Mu_from_Z){
               // std::cout << "FAILED particle flow iso cut" << std::endl;
               pfIso_Fail_Count += 1;
               continue;
            }
-           
+           //Fill bin 9, after the mu from Z pfIso cuts applied
            if (TREE->dimuon1vtx->at(i).at(1) < mu_mu_from_Z_Prob_Cut){
                // std::cout << "FAILED mu_mu_from_Z_Prob_Cut" << std::endl;
                continue; 
            }
-           
+           //Fill bin 10, after the mu from Z pair-wise vertex prob cuts
             
             //end Z cuts
             
@@ -1948,22 +1991,28 @@ void run(string file){//, string file2){
               // std::cout << "FAILED upsi mu pT cuts!" << std::endl; 
               continue;  
             }
+            //Fill  bin 11, after mu from upsi pT cuts
             
             if (fabs(lepton2.Eta()) > mu_from_upsi_eta_Cut || fabs(lepton4.Eta()) > mu_from_upsi_eta_Cut){
               // std::cout << "FAILED upsi mu eta cuts!" << std::endl; 
               continue; 
             }
             
+            //Fill bin 12, after mu from upsi eta cuts
+            
             if ( (lepton2 + lepton4).M() < upsi_mass_low_phase2 || (lepton2 + lepton4).M() > upsi_mass_high_phase2){
               // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl;
               continue;  
             }
+            
+            //Fill bin 13, after the tightening of the upsi mass window is applied
             
             if (TREE->lepton2_isSoftMuon->at(i) + TREE->lepton4_isSoftMuon->at(i) !=2){
                 // std::cout << "FAILED mu from upsi must be soft cut!" << std::endl;
                 continue; 
              
             }
+            //Fill bin 14, after the mu from upsi must be Soft requirement is imposed
             
             //if //( fabs(lepton2.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton4.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
             if  ( fabs((lepton2 + lepton4).Rapidity()) > upsi_RAPIDITY_Cut){
@@ -1971,17 +2020,22 @@ void run(string file){//, string file2){
                 continue; 
             
             }
+            //Fill bin 15, after upsi rapidity  cut
             
             if (TREE->dimuon2vtx->at(i).at(1) < mu_mu_from_upsi_Prob_Cut){
                // std::cout << "FAILED mu_mu_from_upsi_Prob_Cut" << std::endl;
                continue; 
            }
            
+           //Fill bin 16, after the pair-wise mu from upsi vertex prob cut is applied 
            if (applyIsoToUpsiMu){
              if (pfIso_lep2 > pfIso_Cut_Mu_from_Upsi || pfIso_lep4 > pfIso_Cut_Mu_from_Upsi){
                 continue;
              }
            }
+           
+           //Fill bin 17, after the pfIso for mu from upsi cut
+           
            TVector3 dimuon1vtx_vec, dimuon2vtx_vec;
            dimuon1vtx_vec.SetXYZ(TREE->dimuon1vtx_xpos->at(i).at(1), TREE->dimuon1vtx_ypos->at(i).at(1), TREE->dimuon1vtx_zpos->at(i).at(1));
            dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(1), TREE->dimuon2vtx_ypos->at(i).at(1), TREE->dimuon2vtx_zpos->at(i).at(1));
@@ -2294,33 +2348,37 @@ void run(string file){//, string file2){
                 continue;
              }  
             
+            //Fill bin 5, after the mu from Z pT cuts
+            
             if (fabs(lepton2.Eta()) > mu_from_Z_eta_Cut || fabs(lepton4.Eta()) > mu_from_Z_eta_Cut){
                 // std::cout << "FAILED Z mu eta Cuts!" << std::endl; 
                 continue;
             }
+            //Fill bin 6, after the mu from Z eta cuts
             
             if (TREE->lepton2_isTightMuon->at(i) + TREE->lepton4_isTightMuon->at(i) != 2){  //both of them need to be tight, tight has a value of 1, 1 +1 =2 
                // std::cout << "AT LEAST ONE OF THE MUS FROM A Z WAS NOT TIGHT, FAILED THE Z->MU MU BOTH MU MOST BE TIGHT CUT" << std::endl;
                continue;
            
            } 
+           //Fill bin 7, after the mu from Z must be Tight criteria is applied
            
             if (fabs(TREE->lepton2_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut || fabs(TREE->lepton4_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut){
                // std::cout << "FAILED mu froom Z IP sig cut!" << std::endl;
                continue; 
             }
-            
+            //Fill bin 8, after mu from Z 3D IP sig cut
             if (pfIso_lep2 > pfIso_Cut_Mu_from_Z || pfIso_lep4 > pfIso_Cut_Mu_from_Z){
               // std::cout << "FAILED particle flow iso cut" << std::endl;
               pfIso_Fail_Count += 1;
               continue;
            }
-           
+           //Fill bin 9, after mu from Z pfIso cut
            if (TREE->dimuon2vtx->at(i).at(1) < mu_mu_from_Z_Prob_Cut){
                // std::cout << "FAILED mu_mu_from_Z_Prob_Cut" << std::endl;
                continue; 
             }
-
+            //Fill bin 10, after pair-wise mu from Z vtx prob cut
            
            //Upsi cuts
             
@@ -2329,20 +2387,26 @@ void run(string file){//, string file2){
                continue;
             }
             
+            //Fill bin 11, after mu from upsi pT cuts
             if (fabs(lepton1.Eta()) > mu_from_upsi_eta_Cut || fabs(lepton3.Eta()) > mu_from_upsi_eta_Cut){
                // std::cout << "FAILED upsi mu eta cuts!" << std::endl;
                continue; 
             }
+            //Fill bin 12, after mu from upsi eta cuts
             
             if ( (lepton1 + lepton3).M() < upsi_mass_low_phase2 || (lepton1 + lepton3).M() > upsi_mass_high_phase2){
                // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl;
                continue; 
             }
             
+            //Fill bin 13, after tightening of the upsi mass window is done 
+            
             if (TREE->lepton1_isSoftMuon->at(i) + TREE->lepton3_isSoftMuon->at(i) != 2){
                // std::cout << "FAILED mu from upsi must be soft cut" << std::endl;
                continue; 
             }
+            
+            //Fill bin 14, after the mu from upsi must be Soft requirement applied
             
             if //( fabs(lepton1.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton3.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
                
@@ -2350,17 +2414,21 @@ void run(string file){//, string file2){
                // std::cout << "FAILED upsi RAPIDITY cut" << std::endl;
                continue; 
             }
+            //Fill bin 15, after upsi rapidity cut
             
             if (TREE->dimuon1vtx->at(i).at(1) < mu_mu_from_upsi_Prob_Cut){
                 // std::cout << "FAILED mu_mu_from_upsi_Prob_Cut" << std::endl;
                 continue; 
             }
             
+            //Fill bin 16, after pair-wise mu from upsi vtx prob cut
             if(applyIsoToUpsiMu){
               if (pfIso_lep1 > pfIso_Cut_Mu_from_Upsi || pfIso_lep3 > pfIso_Cut_Mu_from_Upsi){
                 continue; 
               }
             }
+            
+            //Fill bin 17, after pfIso cut for upsi mu is applied
             
            TVector3 dimuon1vtx_vec, dimuon2vtx_vec;
            dimuon1vtx_vec.SetXYZ(TREE->dimuon1vtx_xpos->at(i).at(1), TREE->dimuon1vtx_ypos->at(i).at(1), TREE->dimuon1vtx_zpos->at(i).at(1));
@@ -2702,10 +2770,14 @@ void run(string file){//, string file2){
                 continue;
              }  
             
+            //Fill bin 5, after mu from Z pT cuts
+            
             if (fabs(lepton1.Eta()) > mu_from_Z_eta_Cut || fabs(lepton4.Eta()) > mu_from_Z_eta_Cut){
                 // std::cout << "FAILED Z mu eta Cuts!" << std::endl; 
                 continue;
             }
+            
+            //Fill bin 6, after mu from Z eta cuts
             
             if (TREE->lepton1_isTightMuon->at(i) + TREE->lepton4_isTightMuon->at(i) != 2){  //both of them need to be tight, tight has a value of 1, 1 +1 =2 
                // std::cout << "AT LEAST ONE OF THE MUS FROM A Z WAS NOT TIGHT, FAILED THE Z->MU MU BOTH MU MOST BE TIGHT CUT" << std::endl;
@@ -2713,22 +2785,26 @@ void run(string file){//, string file2){
            
            } 
            
+           //Fill bin 7, after mu from Z must be Tight requirement imposed
+           
            if (fabs(TREE->lepton1_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut || fabs(TREE->lepton4_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut){
                // std::cout << "FAILED mu froom Z IP sig cut!" << std::endl;
                continue; 
             }
+            //Fill bin 8, after mu from Z 3D IP sig cuts
             
             if (pfIso_lep1 > pfIso_Cut_Mu_from_Z || pfIso_lep4 > pfIso_Cut_Mu_from_Z){
               // std::cout << "FAILED particle flow iso cut" << std::endl;
               pfIso_Fail_Count += 1;
               continue;
            }
+           //Fill bin 9, after pfIso cuts for mu from Z
          
            if (TREE->dimuon1vtx->at(i).at(2) < mu_mu_from_Z_Prob_Cut){
                // std::cout << "FAILED mu_mu_from_Z_Prob_Cut" << std::endl;
                continue; 
            }
-           
+           //Fill bin 10, after pair-wise mu from Z vtx prob cut
            
    
             
@@ -2740,37 +2816,44 @@ void run(string file){//, string file2){
                continue;
             }
             
+            //Fill bin 11, after mu from upsi pT cuts
             if (fabs(lepton2.Eta()) > mu_from_upsi_eta_Cut || fabs(lepton3.Eta()) > mu_from_upsi_eta_Cut){
                // std::cout << "FAILED upsi mu eta cuts" << std::endl;
                continue;  
             }
             
+            //Fill bin 12, after mu from upsi eta cuts
             if ( (lepton2 + lepton3).M() < upsi_mass_low_phase2 || (lepton2 + lepton3).M() > upsi_mass_high_phase2 ){
                // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl;
                continue; 
             }
+            //Fill bin 13, after tightening of upsi mass window
             
             if (TREE->lepton2_isSoftMuon->at(i) + TREE->lepton3_isSoftMuon->at(i) != 2){
                // std::cout << "FAILED mu from upsi must be soft cut!" << std::endl;
                continue; 
             }
+            //Fill bin 14, after mu from upsi must be Soft cut is applied
             
             if //( fabs(lepton2.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton3.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
                ( fabs ((lepton2 + lepton3).Rapidity()) > upsi_RAPIDITY_Cut){
                // std::cout << "FAILED  upsi RAPIDITY cut" << std::endl;
                continue; 
             }
-            
+            //Fill bin 15, after upsi rapidity cut
             if (TREE->dimuon2vtx->at(i).at(2) < mu_mu_from_upsi_Prob_Cut){
                // std::cout << "FAILED mu_mu_from_upsi_Prob_Cut" << std::endl;
                continue; 
            }
-           
+           //Fill bin 16, after pair-wise mu from upsi vtx prob cut
            if (applyIsoToUpsiMu){
              if (pfIso_lep2 > pfIso_Cut_Mu_from_Upsi || pfIso_lep3 > pfIso_Cut_Mu_from_Upsi){
                continue; 
              }
            }
+           
+           //Fill bin 17, after pfIso cut for mu from upsi applied
+           
            TVector3 dimuon1vtx_vec, dimuon2vtx_vec;
            dimuon1vtx_vec.SetXYZ(TREE->dimuon1vtx_xpos->at(i).at(2), TREE->dimuon1vtx_ypos->at(i).at(2), TREE->dimuon1vtx_zpos->at(i).at(2));
            dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(2), TREE->dimuon2vtx_ypos->at(i).at(2), TREE->dimuon2vtx_zpos->at(i).at(2));
@@ -3090,22 +3173,25 @@ void run(string file){//, string file2){
                 // std::cout << "FAILED Z mu Pt Cuts" << std::endl;
                 continue;
              }  
+             //Fill bin 5, after mu from Z pT cuts
              
              if (fabs(lepton2.Eta()) > mu_from_Z_eta_Cut || fabs(lepton3.Eta()) > mu_from_Z_eta_Cut){
                 // std::cout << "FAILED Z mu eta Cuts!" << std::endl; 
                 continue;
             }
-             
+             //Fill bin 6, after mu from Z eta cuts
              if (TREE->lepton2_isTightMuon->at(i) + TREE->lepton3_isTightMuon->at(i) != 2){  //both of them need to be tight, tight has a value of 1, 1 +1 =2 
                // std::cout << "AT LEAST ONE OF THE MUS FROM A Z WAS NOT TIGHT, FAILED THE Z->MU MU BOTH MU MOST BE TIGHT CUT" << std::endl;
                continue;
            
            } 
+           //Fill bin 7, after mu from Z must be Tight criteria applied
              
              if (fabs(TREE->lepton2_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut || fabs(TREE->lepton3_impactParameterSignificance->at(i)) > mu_from_Z_3DIPSig_Cut){
                // std::cout << "FAILED mu froom Z IP sig cut!" << std::endl;
                continue; 
             }
+            //Fill bin 8, after mu from Z 3D IP sig cuts
             
             if (pfIso_lep2 > pfIso_Cut_Mu_from_Z || pfIso_lep3 > pfIso_Cut_Mu_from_Z){
               // std::cout << "FAILED particle flow iso cut" << std::endl;
@@ -3113,11 +3199,12 @@ void run(string file){//, string file2){
               continue;
             }
             
+            //Fill bin 9, after pfIso cuts for mu from Z 
             if (TREE->dimuon2vtx->at(i).at(2) < mu_mu_from_Z_Prob_Cut){
                // std::cout << "FAILED mu_mu_from_Z_Prob_Cut" << std::endl;
                continue; 
             } 
-          
+          //Fill bin 10, after pair-wise mu from Z vtx prob cut
              
              //end Z cuts
              
@@ -3128,21 +3215,25 @@ void run(string file){//, string file2){
                  continue;
              }
              
+             //Fill bin 11, after mu from upsi pT cuts
              if (fabs(lepton1.Eta()) > mu_from_upsi_eta_Cut || fabs(lepton4.Eta()) > mu_from_upsi_eta_Cut){
                  // std::cout << "FAILED mu from upsi eta cuts!" << std::endl;
                  continue; 
              }
+             //Fill bin 12, after mu from upsi eta cuts
              
              if ( (lepton1 + lepton4).M() < upsi_mass_low_phase2 || (lepton1+lepton4).M() > upsi_mass_high_phase2 ){
                  // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl; 
                  continue; 
                 
              }
+             //Fill bin 13, after tightening of the upsi mass window
              
              if (TREE->lepton1_isSoftMuon->at(i) + TREE->lepton4_isSoftMuon->at(i) != 2){
                 // std::cout << "FAILED mu from upsi must be soft cut!" << std::endl; 
                 continue ; 
              }
+             //Fill bin 14, after the mu from upsi must be Soft criteria is applied
              
              if //( fabs(lepton1.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton4.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
                 ( fabs ((lepton1 + lepton4).Rapidity()) > upsi_RAPIDITY_Cut) {
@@ -3150,16 +3241,19 @@ void run(string file){//, string file2){
                 continue; 
              }
              
+             //Fill bin 15, after upsi rapidity cut
              if (TREE->dimuon1vtx->at(i).at(2) < mu_mu_from_upsi_Prob_Cut){
                 // std::cout << "FAILED mu_mu_from_upsi_Prob_Cut" << std::endl;
                 continue; 
             }
+            //Fill bin 16, after pair-wise mu from upsi vtx prob cut applied
             
             if(applyIsoToUpsiMu){
               if (pfIso_lep1 > pfIso_Cut_Mu_from_Upsi || pfIso_lep4 > pfIso_Cut_Mu_from_Upsi){
                 continue;
               }
             }
+            //Fill bin 17, after pfIso for mu from upsi is applied
             
             TVector3 dimuon1vtx_vec, dimuon2vtx_vec;
             dimuon1vtx_vec.SetXYZ(TREE->dimuon1vtx_xpos->at(i).at(2), TREE->dimuon1vtx_ypos->at(i).at(2), TREE->dimuon1vtx_zpos->at(i).at(2));
