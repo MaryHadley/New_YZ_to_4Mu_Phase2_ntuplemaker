@@ -107,6 +107,11 @@ void run(string file){//, string file2){
   TH1F *h_dz_after_4MuVtxProbCut = new TH1F("h_dz_after_4MuVtxProbCut", "h_dz_after_4MuVtxProbCut", 100, 0, 10); h_dz_after_4MuVtxProbCut->SetXTitle("dZ between vertex pairs (cm) after application of 4 mu vtx prob cut");
   h_dz_after_4MuVtxProbCut->Sumw2();
   
+  TH1F *h_cutflow = new TH1F("h_cutflow", "h_cutflow", 20, 0.5, 20.5); h_cutflow->SetXTitle("Cutflow Histogram");
+  h_cutflow->GetXaxis()->SetNdivisions(20, kFALSE);
+  h_cutflow->GetXaxis()->SetLabelSize(0.02);
+  h_cutflow->Sumw2();
+  
   //Ignoring MC for the moment 
   TH1F *h_truth_Z_mass    = new TH1F("h_truth_Z_mass",    "h_truth_Z_mass", 20, 66., 116.);  h_truth_Z_mass->SetMarkerSize(0); //If I change the binning above, would also want to change it here so the truth and recovered plots have same scale 
   h_truth_Z_mass->Sumw2();
@@ -396,6 +401,8 @@ void run(string file){//, string file2){
      }
      
      //fill first bin of cutflow histo here, this will be the total number of events considered
+     h_cutflow->Fill(1);
+     
      denominator_ZplusY_counter++;
      //  if (eventCounter > 5){
 //         break;
@@ -662,6 +669,8 @@ void run(string file){//, string file2){
    }
    //fill second bin of cutflow histo here, these will be events that passed the trigger cut. Note this number will probably be slightly different
    //when we run with the 2016 vs. 2017 vs. 2018 triggers.
+   
+   h_cutflow->Fill(2);
     
    auto big4MuVtxProbVec = TREE->big4MuVtx;
    //std::cout << "Reached checkpoint 0" << std::endl;
@@ -3858,6 +3867,12 @@ std::cout << "denominator_ZplusY_counter:  " << denominator_ZplusY_counter << st
   h_dz_after_4MuVtxProbCut->Draw();
   h_dz_after_4MuVtxProbCut->Write();
   c_dz_after_4MuVtxProbCut->SaveAs("c_dz_after_4MuVtxProbCut.pdf");
+  
+  TCanvas *c_cutflow = new TCanvas("c_cutflow", "c_cutflow");
+  c_cutflow->cd();
+  h_cutflow->Draw();
+  h_cutflow->Write();
+  c_cutflow->SaveAs("c_cutflow.pdf");
  
 
 
