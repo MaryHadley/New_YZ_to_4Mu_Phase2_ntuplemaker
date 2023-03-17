@@ -119,9 +119,9 @@ void run(string file){//, string file2){
   double Z_mass_true = 91.1876; //from PDG, 4 October 2022
   
   //non-boolean flags
- //  int triggerYear = 2016; //options are 2016, 2017, 2018
+   int triggerYear = 2016; //options are 2016, 2017, 2018
  // int triggerYear = 2017;
-  int triggerYear = 2018;
+//  int triggerYear = 2018;
   
   std::cout << "Using triggers for year:  " << triggerYear << std::endl;
   std::cout << "//////////////////////" << std::endl;
@@ -131,7 +131,7 @@ void run(string file){//, string file2){
   
   bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
   bool applyIsoToUpsiMu = true;
-  bool doRecoToTrigMuMatching = false;
+//  bool doRecoToTrigMuMatching = false;
   
   if (!doMCTruthMatching){
      std::cout << "NOT performing MC truth matching" << std::endl;
@@ -154,16 +154,16 @@ void run(string file){//, string file2){
     std::cout << "/////////////////////////////////////////////////" << std::endl;
   }
   
-  if (!doRecoToTrigMuMatching){
-    std::cout << "NOT including reco to trigger muon matching cut" << std::endl;
-    std::cout << "///////////////////////////////////////////////" << std::endl;
-  }
-  
-  if (doRecoToTrigMuMatching){
-    std::cout << "INCLUDING reco to trigger muon matching cut" << std::endl;
-    std::cout << "///////////////////////////////////////////" << std::endl;
-  }
-  
+//   if (!doRecoToTrigMuMatching){
+//     std::cout << "NOT including reco to trigger muon matching cut" << std::endl;
+//     std::cout << "///////////////////////////////////////////////" << std::endl;
+//   }
+//   
+//   if (doRecoToTrigMuMatching){
+//     std::cout << "INCLUDING reco to trigger muon matching cut" << std::endl;
+//     std::cout << "///////////////////////////////////////////" << std::endl;
+//   }
+//   
   
   
   //counters
@@ -316,7 +316,7 @@ void run(string file){//, string file2){
  
    
   
-  TFile *ntuple = new TFile("UPDATED_ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_myNewFile.root", "RECREATE");
+  TFile *ntuple = new TFile("17March2023_ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_12July2022_Run2016_Total.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -952,11 +952,11 @@ void run(string file){//, string file2){
    //   h_cutflow_allQuadCuts->Fill(4); //here are the quads that survive pfIso cut
    
       //  std::cout << "TREE->quadHasHowManyTrigMatches->at(i)  " << TREE->quadHasHowManyTrigMatches->at(i) << std::endl;
-      if (doRecoToTrigMuMatching){
-        if (TREE->quadHasHowManyTrigMatches->at(i) < 2) {
-          continue;
-        }
-      }
+     //  if (doRecoToTrigMuMatching){
+//         if (TREE->quadHasHowManyTrigMatches->at(i) < 2) {
+//           continue;
+//         }
+//       }
        h_cutflow_allQuadCuts->Fill(4); //here are the quads that survive the trigger matching requirement 
      
        //////////////////////////////////////////////
@@ -1114,17 +1114,17 @@ void run(string file){//, string file2){
            dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(0), TREE->dimuon2vtx_ypos->at(i).at(0), TREE->dimuon2vtx_zpos->at(i).at(0));
            
            //Protection against  vectors whose vertex coordinates got filled with the value (-1000) that indicates that the vertex was found to be not valid in the phase1 code
-           if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
-             continue; 
-           }
+          //  if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
+//              continue; 
+//            }
            
-           h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(15);
+  //         h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(15);
            
-           if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
-             continue; 
-           }
+          //  if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
+//              continue; 
+//            }
            
-           h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(16);
+      //     h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(16);
            
          /* 
   if (dimuon1vtx_vec.DeltaR(dimuon2vtx_vec) >  deltaR_dimuon1vtx_dimuon2vtx_Cut){
@@ -1132,15 +1132,21 @@ void run(string file){//, string file2){
              continue;
            }
  */
-           h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(17);
+    //       h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(17);
            
-           double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec); //Retire this dR forever! Do not use it as a cut variable ever!
+  //         double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec); //Retire this dR forever! Do not use it as a cut variable ever!
+       
+//        if (dimuon1vtx_vec.X() == -10000.){
+//          std::cout << "CATERPILLAR" << std::endl;
+//        }
+           
+       if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {  
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
           //  if (dZ > dR + offset){
 //              continue;
 //            
-           h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(18);
+//           h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(18);
            
            h_dz_vs_4MuVtxProb->Fill(dZ, TREE->big4MuVtx->at(i));
            h_dz_vs_4MuVtxProb_zoomIn->Fill(dZ, TREE->big4MuVtx->at(i));
@@ -1211,7 +1217,7 @@ void run(string file){//, string file2){
         double DZ_Sig = TMath::Sqrt(DZ_Sig2);
    //     std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
          h_DZ_Sig->Fill(DZ_Sig);
-           
+   }        
            
            //If we get here, we have a survivor 
            
@@ -1553,19 +1559,21 @@ void run(string file){//, string file2){
             dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(0), TREE->dimuon2vtx_ypos->at(i).at(0), TREE->dimuon2vtx_zpos->at(i).at(0));
             
              //Protection against  vectors whose vertex coordinates got filled with the value (-1000) that indicates that the vertex was found to be not valid in the phase1 code
-             if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
-             continue; 
-             }
-           
-           if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
-             continue; 
-           }
+           //   if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
+//              continue; 
+//              }
+//            
+//            if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
+//              continue; 
+//            }
            
         //     if (dimuon1vtx_vec.DeltaR(dimuon2vtx_vec) >  deltaR_dimuon1vtx_dimuon2vtx_Cut){
 //              continue;
 //            }
            
-           double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
+          // double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
+          
+        if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
             h_dz_vs_4MuVtxProb->Fill(dZ, TREE->big4MuVtx->at(i));
@@ -1638,6 +1646,7 @@ void run(string file){//, string file2){
         double DZ_Sig = TMath::Sqrt(DZ_Sig2);
  //       std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
            h_DZ_Sig->Fill(DZ_Sig); 
+     }
            
            if (!doMCTruthMatching){
            
@@ -1970,19 +1979,20 @@ void run(string file){//, string file2){
            dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(1), TREE->dimuon2vtx_ypos->at(i).at(1), TREE->dimuon2vtx_zpos->at(i).at(1));
            
              //Protection against  vectors whose vertex coordinates got filled with the value (-1000) that indicates that the vertex was found to be not valid in the phase1 code
-           if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
-             continue; 
-           }
-           
-           if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
-             continue; 
-           }
-           
+        //    if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
+//              continue; 
+//            }
+//            
+//            if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
+//              continue; 
+//            }
+//            
        //      if (dimuon1vtx_vec.DeltaR(dimuon2vtx_vec) >  deltaR_dimuon1vtx_dimuon2vtx_Cut){
 //              continue;
 //            }
            
-           double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
+       //    double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
+if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
           //  if (dZ > dR + offset){
@@ -2049,7 +2059,7 @@ void run(string file){//, string file2){
         double DZ_Sig = TMath::Sqrt(DZ_Sig2);
  //      std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
          h_DZ_Sig->Fill(DZ_Sig);
-           
+    }  
             
             if (!doMCTruthMatching){
                 temp_Z_mass.push_back((lepton1 + lepton3).M());
@@ -2350,19 +2360,20 @@ void run(string file){//, string file2){
            dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(1), TREE->dimuon2vtx_ypos->at(i).at(1), TREE->dimuon2vtx_zpos->at(i).at(1));
            
         //Protection against  vectors whose vertex coordinates got filled with the value (-1000) that indicates that the vertex was found to be not valid in the phase1 code
-           if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
-             continue; 
-           }
-           
-           if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
-             continue; 
-           }
-           
+     //       if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
+//              continue; 
+//            }
+//            
+//            if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
+//              continue; 
+//            }
+//            
       //       if (dimuon1vtx_vec.DeltaR(dimuon2vtx_vec) >  deltaR_dimuon1vtx_dimuon2vtx_Cut){
 //              continue;
 //            }
            
-           double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
+      //     double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
+  if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
            
@@ -2432,6 +2443,7 @@ void run(string file){//, string file2){
         double DZ_Sig = TMath::Sqrt(DZ_Sig2);
  //       std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
           h_DZ_Sig->Fill(DZ_Sig);  
+        }
         
         
             if (!doMCTruthMatching){
@@ -2759,19 +2771,20 @@ void run(string file){//, string file2){
            dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(2), TREE->dimuon2vtx_ypos->at(i).at(2), TREE->dimuon2vtx_zpos->at(i).at(2));
            
             //Protection against  vectors whose vertex coordinates got filled with the value (-1000) that indicates that the vertex was found to be not valid in the phase1 code
-           if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
-             continue; 
-           }
-           
-           if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
-             continue; 
-           }
-           
+       //     if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
+//              continue; 
+//            }
+//            
+//            if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
+//              continue; 
+//            }
+//            
         //     if (dimuon1vtx_vec.DeltaR(dimuon2vtx_vec) >  deltaR_dimuon1vtx_dimuon2vtx_Cut){
 //              continue;
 //            }
            
-           double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
+        //   double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
+    if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
            
@@ -2840,7 +2853,7 @@ void run(string file){//, string file2){
         double DZ_Sig = TMath::Sqrt(DZ_Sig2);
   //      std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
            h_DZ_Sig->Fill(DZ_Sig); 
-        
+        }
         
             if (!doMCTruthMatching){
                  // std::cout << "TEST AVALANCHE" << std::endl;
@@ -3149,19 +3162,20 @@ void run(string file){//, string file2){
             dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(2), TREE->dimuon2vtx_ypos->at(i).at(2), TREE->dimuon2vtx_zpos->at(i).at(2)); 
             
             //Protection against  vectors whose vertex coordinates got filled with the value (-1000) that indicates that the vertex was found to be not valid in the phase1 code
-           if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
-             continue; 
-           }
-           
-           if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
-             continue; 
-           }
+         //   if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
+//              continue; 
+//            }
+//            
+//            if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
+//              continue; 
+//            }
           
         //    if (dimuon1vtx_vec.DeltaR(dimuon2vtx_vec) >  deltaR_dimuon1vtx_dimuon2vtx_Cut){
 //              continue;
 //            }
            
-           double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
+     //      double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
+   if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
         //    if (dZ > dR + offset){
@@ -3228,6 +3242,7 @@ void run(string file){//, string file2){
         double DZ_Sig = TMath::Sqrt(DZ_Sig2);
 //        std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
             h_DZ_Sig->Fill(DZ_Sig);
+        }
           
              if (!doMCTruthMatching){
                   temp_Z_mass.push_back((lepton2+lepton3).M());
