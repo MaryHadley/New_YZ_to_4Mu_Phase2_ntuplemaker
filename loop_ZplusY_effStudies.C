@@ -872,7 +872,8 @@ void run(string file){//, string file2){
       // and flagZplusY must equal 0
       
       //Fill the third bin of the cutflow histo here. TO CHECK: does this cut do anything now that we have said denominator_ZplusY must be true to even get
-      //into this histogram
+      //into this histogram //Yes, occasionally the quad with highest 4 muon vertex prob will NOT be a quad that was flagged as flagZplusY, so 
+      //yes, this cut still does something
       
       h_cutflow->Fill(3);
             
@@ -1180,14 +1181,18 @@ void run(string file){//, string file2){
           // std::cout << TREE->dimuon1vtx_xpos->at(i).at(0) << std::endl;
            dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(0), TREE->dimuon2vtx_ypos->at(i).at(0), TREE->dimuon2vtx_zpos->at(i).at(0));
            
+ //          std::cout << "REACHED CHECKPOINT 0" << std::endl;
+           
            //Protection against  vectors whose vertex coordinates got filled with the value (-1000) that indicates that the vertex was found to be not valid in the phase1 code
            if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
+             std::cout << "REACHED CHECKPOINT 1" << std::endl;
              continue; 
            }
            
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(15);
            
            if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
+             std::cout << "REACHED CHECKPOINT 2" << std::endl; 
              continue; 
            }
            
