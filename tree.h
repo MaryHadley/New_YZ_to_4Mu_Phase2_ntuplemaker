@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Thu Feb  9 14:07:13 2023 by ROOT version 6.14/09
+// Sun Mar 26 16:03:11 2023 by ROOT version 6.14/09
 // from TTree tree/tree
 // found on file: myNewFile.root
 //////////////////////////////////////////////////////////
@@ -206,6 +206,21 @@ public :
    vector<double>  *lepton3_validHits;
    vector<double>  *lepton4_validHits;
    Bool_t          denominator_ZplusY;
+   Bool_t          truth_eventHasZUpsi1To4Mu;
+   Bool_t          truth_eventHasZUpsi2To4Mu;
+   Bool_t          truth_eventHasZUpsi3To4Mu;
+   vector<double>  *truth_Zmuon_pt;
+   vector<double>  *truth_Zmuon_eta;
+   vector<double>  *truth_Zmuon_phi;
+   vector<double>  *truth_Upsimuon_pt;
+   vector<double>  *truth_Upsimuon_eta;
+   vector<double>  *truth_Upsimuon_phi;
+   vector<double>  *truth_Upsi2muon_pt;
+   vector<double>  *truth_Upsi2muon_eta;
+   vector<double>  *truth_Upsi2muon_phi;
+   vector<double>  *truth_Upsi3muon_pt;
+   vector<double>  *truth_Upsi3muon_eta;
+   vector<double>  *truth_Upsi3muon_phi;
 
    // List of branches
    TBranch        *b_event_number;   //!
@@ -385,6 +400,21 @@ public :
    TBranch        *b_lepton3_validHits;   //!
    TBranch        *b_lepton4_validHits;   //!
    TBranch        *b_denominator_ZplusY;   //!
+   TBranch        *b_truth_eventHasZUpsi1To4Mu;   //!
+   TBranch        *b_truth_eventHasZUpsi2To4Mu;   //!
+   TBranch        *b_truth_eventHasZUpsi3To4Mu;   //!
+   TBranch        *b_truth_Zmuon_pt;   //!
+   TBranch        *b_truth_Zmuon_eta;   //!
+   TBranch        *b_truth_Zmuon_phi;   //!
+   TBranch        *b_truth_Upsimuon_pt;   //!
+   TBranch        *b_truth_Upsimuon_eta;   //!
+   TBranch        *b_truth_Upsimuon_phi;   //!
+   TBranch        *b_truth_Upsi2muon_pt;   //!
+   TBranch        *b_truth_Upsi2muon_eta;   //!
+   TBranch        *b_truth_Upsi2muon_phi;   //!
+   TBranch        *b_truth_Upsi3muon_pt;   //!
+   TBranch        *b_truth_Upsi3muon_eta;   //!
+   TBranch        *b_truth_Upsi3muon_phi;   //!
 
    tree(TTree *tree=0);
    virtual ~tree();
@@ -641,6 +671,18 @@ void tree::Init(TTree *tree)
    lepton2_validHits = 0;
    lepton3_validHits = 0;
    lepton4_validHits = 0;
+   truth_Zmuon_pt = 0;
+   truth_Zmuon_eta = 0;
+   truth_Zmuon_phi = 0;
+   truth_Upsimuon_pt = 0;
+   truth_Upsimuon_eta = 0;
+   truth_Upsimuon_phi = 0;
+   truth_Upsi2muon_pt = 0;
+   truth_Upsi2muon_eta = 0;
+   truth_Upsi2muon_phi = 0;
+   truth_Upsi3muon_pt = 0;
+   truth_Upsi3muon_eta = 0;
+   truth_Upsi3muon_phi = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -824,6 +866,21 @@ void tree::Init(TTree *tree)
    fChain->SetBranchAddress("lepton3_validHits", &lepton3_validHits, &b_lepton3_validHits);
    fChain->SetBranchAddress("lepton4_validHits", &lepton4_validHits, &b_lepton4_validHits);
    fChain->SetBranchAddress("denominator_ZplusY", &denominator_ZplusY, &b_denominator_ZplusY);
+   fChain->SetBranchAddress("truth_eventHasZUpsi1To4Mu", &truth_eventHasZUpsi1To4Mu, &b_truth_eventHasZUpsi1To4Mu);
+   fChain->SetBranchAddress("truth_eventHasZUpsi2To4Mu", &truth_eventHasZUpsi2To4Mu, &b_truth_eventHasZUpsi2To4Mu);
+   fChain->SetBranchAddress("truth_eventHasZUpsi3To4Mu", &truth_eventHasZUpsi3To4Mu, &b_truth_eventHasZUpsi3To4Mu);
+   fChain->SetBranchAddress("truth_Zmuon_pt", &truth_Zmuon_pt, &b_truth_Zmuon_pt);
+   fChain->SetBranchAddress("truth_Zmuon_eta", &truth_Zmuon_eta, &b_truth_Zmuon_eta);
+   fChain->SetBranchAddress("truth_Zmuon_phi", &truth_Zmuon_phi, &b_truth_Zmuon_phi);
+   fChain->SetBranchAddress("truth_Upsimuon_pt", &truth_Upsimuon_pt, &b_truth_Upsimuon_pt);
+   fChain->SetBranchAddress("truth_Upsimuon_eta", &truth_Upsimuon_eta, &b_truth_Upsimuon_eta);
+   fChain->SetBranchAddress("truth_Upsimuon_phi", &truth_Upsimuon_phi, &b_truth_Upsimuon_phi);
+   fChain->SetBranchAddress("truth_Upsi2muon_pt", &truth_Upsi2muon_pt, &b_truth_Upsi2muon_pt);
+   fChain->SetBranchAddress("truth_Upsi2muon_eta", &truth_Upsi2muon_eta, &b_truth_Upsi2muon_eta);
+   fChain->SetBranchAddress("truth_Upsi2muon_phi", &truth_Upsi2muon_phi, &b_truth_Upsi2muon_phi);
+   fChain->SetBranchAddress("truth_Upsi3muon_pt", &truth_Upsi3muon_pt, &b_truth_Upsi3muon_pt);
+   fChain->SetBranchAddress("truth_Upsi3muon_eta", &truth_Upsi3muon_eta, &b_truth_Upsi3muon_eta);
+   fChain->SetBranchAddress("truth_Upsi3muon_phi", &truth_Upsi3muon_phi, &b_truth_Upsi3muon_phi);
    Notify();
 }
 
