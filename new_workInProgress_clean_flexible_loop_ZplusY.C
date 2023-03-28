@@ -119,8 +119,8 @@ void run(string file){//, string file2){
   double Z_mass_true = 91.1876; //from PDG, 4 October 2022
   
   //non-boolean flags
-   int triggerYear = 2016; //options are 2016, 2017, 2018
- // int triggerYear = 2017;
+ //  int triggerYear = 2016; //options are 2016, 2017, 2018
+  int triggerYear = 2017;
 //  int triggerYear = 2018;
   
   std::cout << "Using triggers for year:  " << triggerYear << std::endl;
@@ -129,7 +129,7 @@ void run(string file){//, string file2){
   
   //boolean flags
   
-  bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
+  bool doMCTruthMatching = true; //code working for !doMCTruthMatching and doMCTruthMatching :)
   bool applyIsoToUpsiMu = true;
 //  bool doRecoToTrigMuMatching = false;
   
@@ -316,7 +316,7 @@ void run(string file){//, string file2){
  
    
   
-  TFile *ntuple = new TFile("17March2023_ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_12July2022_Run2016_Total.root", "RECREATE");
+  TFile *ntuple = new TFile("test5_27March2023_ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_myNewFile_2017.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -1286,13 +1286,13 @@ void run(string file){//, string file2){
              //int found1Index = -1;
              
              
-             int entriesMC = (TREEMC->fChain)->GetEntries();
-             for(int iEntry=0; iEntry<entriesMC; iEntry++) {
+         //    int entriesMC = (TREEMC->fChain)->GetEntries();
+    //         for(int iEntry=0; iEntry<entriesMC; iEntry++) {
                 //// std::cout << "Koala bear"<< std::endl; 
-                (TREEMC->fChain)->GetEntry(iEntry);
-                mcSanityCheckCount++;
+   //             (TREEMC->fChain)->GetEntry(iEntry);
+     //           mcSanityCheckCount++;
                 
-                if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
+       //         if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
                   //// std::cout << "mc_event_number  " << TREEMC->mc_event_number->at(0) << std::endl;
                   //// std::cout << "evNumThisQuad  " << evNumThisQuad << std::endl;
                   //// std::cout << "dog" << std::endl;
@@ -1301,9 +1301,9 @@ void run(string file){//, string file2){
                   bool found1 = false; //1 short for lep1
                   bool found2 = false; //2 short for lep2
                   int found1Index = -1;
-                  for (int i=0; i<(int)TREEMC->truth_Zmuon_pt->size(); i++){
+                  for (int i=0; i<(int)TREE->truth_Zmuon_pt->size(); i++){
                     TLorentzVector Z_mu_truth;
-                    Z_mu_truth.SetPtEtaPhiM(TREEMC->truth_Zmuon_pt->at(i), TREEMC->truth_Zmuon_eta->at(i), TREEMC->truth_Zmuon_phi->at(i), muon_mass);
+                    Z_mu_truth.SetPtEtaPhiM(TREE->truth_Zmuon_pt->at(i), TREE->truth_Zmuon_eta->at(i), TREE->truth_Zmuon_phi->at(i), muon_mass);
                     if (Z_mu_truth.DeltaR(lepton1) < deltaRCut){
                     //  // std::cout << "EUREKA" << std::endl;
                       found1Index = i;
@@ -1325,10 +1325,10 @@ void run(string file){//, string file2){
                   bool found4_in_Upsi1 = false; //4 short for lep4
                   int found3_in_Upsi1_Index = -1;
                   
-                  for (int j = 0; j < (int)TREEMC->truth_Upsimuon_pt->size(); j++){
+                  for (int j = 0; j < (int)TREE->truth_Upsimuon_pt->size(); j++){
                     //// std::cout << "Poodle" << std::endl;
                     TLorentzVector Upsi1_mu_truth;
-                    Upsi1_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsimuon_pt->at(j), TREEMC->truth_Upsimuon_eta->at(j), TREEMC->truth_Upsimuon_phi->at(j), muon_mass);
+                    Upsi1_mu_truth.SetPtEtaPhiM(TREE->truth_Upsimuon_pt->at(j), TREE->truth_Upsimuon_eta->at(j), TREE->truth_Upsimuon_phi->at(j), muon_mass);
                     if (Upsi1_mu_truth.DeltaR(lepton3) < deltaRCut){
                      // // std::cout << "EUREKA 3" << std::endl;
                       found3_in_Upsi1 = true;
@@ -1342,16 +1342,16 @@ void run(string file){//, string file2){
                     
                   }
                  
-                 // // std::cout << "TREEMC->truth_Upsi2muon_pt->size() " << TREEMC->truth_Upsi2muon_pt->size() << std::endl; 
+//                  std::cout << "TREE->truth_Upsi2muon_pt->size() " << TREE->truth_Upsi2muon_pt->size() << std::endl; 
                  
                   bool found3_in_Upsi2 = false; //3 short for lep3
                   bool found4_in_Upsi2 = false; //4 short for lep4
                   int found3_in_Upsi2_Index =  -1;
                   
-                  for (int k = 0; k < (int)TREEMC->truth_Upsi2muon_pt->size(); k++){
+                  for (int k = 0; k < (int)TREE->truth_Upsi2muon_pt->size(); k++){
                     //// std::cout << "Great Ape" << std::endl;
                     TLorentzVector Upsi2_mu_truth;
-                    Upsi2_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi2muon_pt->at(k), TREEMC->truth_Upsi2muon_eta->at(k), TREEMC->truth_Upsi2muon_phi->at(k), muon_mass);
+                    Upsi2_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi2muon_pt->at(k), TREE->truth_Upsi2muon_eta->at(k), TREE->truth_Upsi2muon_phi->at(k), muon_mass);
                     if (Upsi2_mu_truth.DeltaR(lepton3) < deltaRCut){
                      // // std::cout << "found3_in_Upsi2" << std::endl;
                       found3_in_Upsi2 = true;
@@ -1368,11 +1368,11 @@ void run(string file){//, string file2){
                   bool found4_in_Upsi3 = false; //4 short for lep4
                   int found3_in_Upsi3_Index = -1;
                   
-                 // // std::cout << "TREEMC->truth_Upsi3muon_pt->size() " << TREEMC->truth_Upsi3muon_pt->size() << std::endl;
-                 for (int l = 0; l < (int)TREEMC->truth_Upsi3muon_pt->size(); l++){
+                 // // std::cout << "TREE->truth_Upsi3muon_pt->size() " << TREE->truth_Upsi3muon_pt->size() << std::endl;
+                 for (int l = 0; l < (int)TREE->truth_Upsi3muon_pt->size(); l++){
                    //// std::cout << "Ron Swanson" << std::endl; 
                    TLorentzVector Upsi3_mu_truth;
-                   Upsi3_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi3muon_pt->at(l), TREEMC->truth_Upsi3muon_eta->at(l), TREEMC->truth_Upsi3muon_phi->at(l), muon_mass);
+                   Upsi3_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi3muon_pt->at(l), TREE->truth_Upsi3muon_eta->at(l), TREE->truth_Upsi3muon_phi->at(l), muon_mass);
                    if (Upsi3_mu_truth.DeltaR(lepton3) < deltaRCut){
                     // // std::cout << "found3_in_Upsi3 " << std::endl;
                      found3_in_Upsi3 = true;
@@ -1462,9 +1462,9 @@ void run(string file){//, string file2){
                 
                  }
                  
-                }
+             //   }
                 
-             }
+   //          }
              
            } //Keep me, I am important and separate from the new stuff you're trying to add
 
@@ -1698,11 +1698,11 @@ void run(string file){//, string file2){
            if (doMCTruthMatching){
              // std::cout << "Poodles! Doing MC Truth Matching!" << std::endl; 
              
-             int entriesMC = (TREEMC->fChain)->GetEntries();
-             for(int iEntry=0; iEntry<entriesMC; iEntry++) {
+      //       int entriesMC = (TREEMC->fChain)->GetEntries();
+  //           for(int iEntry=0; iEntry<entriesMC; iEntry++) {
                 //// std::cout << "Koala bear"<< std::endl; 
-                (TREEMC->fChain)->GetEntry(iEntry);
-                if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
+            //    (TREEMC->fChain)->GetEntry(iEntry);
+      //          if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
                   // std::cout << "Poodles again!" << std::endl; 
                   
                   bool matched = false; 
@@ -1711,9 +1711,9 @@ void run(string file){//, string file2){
                   bool found4 = false; //short for lep4
                   int found3Index = -1; 
                   
-                  for (int i=0; i<(int)TREEMC->truth_Zmuon_pt->size(); i++){
+                  for (int i=0; i<(int)TREE->truth_Zmuon_pt->size(); i++){
                     TLorentzVector Z_mu_truth;
-                    Z_mu_truth.SetPtEtaPhiM(TREEMC->truth_Zmuon_pt->at(i), TREEMC->truth_Zmuon_eta->at(i), TREEMC->truth_Zmuon_phi->at(i), muon_mass);
+                    Z_mu_truth.SetPtEtaPhiM(TREE->truth_Zmuon_pt->at(i), TREE->truth_Zmuon_eta->at(i), TREE->truth_Zmuon_phi->at(i), muon_mass);
                     if (Z_mu_truth.DeltaR(lepton3) < deltaRCut){
                     //  // std::cout << "EUREKA" << std::endl;
                       found3Index = i;
@@ -1735,10 +1735,10 @@ void run(string file){//, string file2){
                   bool found2_in_Upsi1 = false; //2 short for lep2
                   int found1_in_Upsi1_Index = -1;
                   
-                  for (int j = 0; j < (int)TREEMC->truth_Upsimuon_pt->size(); j++){
+                  for (int j = 0; j < (int)TREE->truth_Upsimuon_pt->size(); j++){
                     //// std::cout << "Poodle" << std::endl;
                     TLorentzVector Upsi1_mu_truth;
-                    Upsi1_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsimuon_pt->at(j), TREEMC->truth_Upsimuon_eta->at(j), TREEMC->truth_Upsimuon_phi->at(j), muon_mass);
+                    Upsi1_mu_truth.SetPtEtaPhiM(TREE->truth_Upsimuon_pt->at(j), TREE->truth_Upsimuon_eta->at(j), TREE->truth_Upsimuon_phi->at(j), muon_mass);
                     if (Upsi1_mu_truth.DeltaR(lepton1) < deltaRCut){
                      // // std::cout << "EUREKA 3" << std::endl;
                       found1_in_Upsi1 = true;
@@ -1756,10 +1756,10 @@ void run(string file){//, string file2){
                   bool found2_in_Upsi2 = false;
                   int  found1_in_Upsi2_Index = -1; 
                   
-                  for (int k = 0; k < (int)TREEMC->truth_Upsi2muon_pt->size(); k++){
+                  for (int k = 0; k < (int)TREE->truth_Upsi2muon_pt->size(); k++){
                     //// std::cout << "Great Ape" << std::endl;
                     TLorentzVector Upsi2_mu_truth;
-                    Upsi2_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi2muon_pt->at(k), TREEMC->truth_Upsi2muon_eta->at(k), TREEMC->truth_Upsi2muon_phi->at(k), muon_mass);
+                    Upsi2_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi2muon_pt->at(k), TREE->truth_Upsi2muon_eta->at(k), TREE->truth_Upsi2muon_phi->at(k), muon_mass);
                     if (Upsi2_mu_truth.DeltaR(lepton1) < deltaRCut){
                      // // std::cout << "found1_in_Upsi2" << std::endl;
                       found1_in_Upsi2 = true;
@@ -1776,10 +1776,10 @@ void run(string file){//, string file2){
                   bool found2_in_Upsi3 = false;
                   int found1_in_Upsi3_Index = -1;
                   
-                  for (int l = 0; l < (int)TREEMC->truth_Upsi3muon_pt->size(); l++){
+                  for (int l = 0; l < (int)TREE->truth_Upsi3muon_pt->size(); l++){
                    //// std::cout << "Ron Swanson" << std::endl; 
                    TLorentzVector Upsi3_mu_truth;
-                   Upsi3_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi3muon_pt->at(l), TREEMC->truth_Upsi3muon_eta->at(l), TREEMC->truth_Upsi3muon_phi->at(l), muon_mass);
+                   Upsi3_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi3muon_pt->at(l), TREE->truth_Upsi3muon_eta->at(l), TREE->truth_Upsi3muon_phi->at(l), muon_mass);
                    if (Upsi3_mu_truth.DeltaR(lepton1) < deltaRCut){
                     // // std::cout << "found1_in_Upsi3 " << std::endl;
                      found1_in_Upsi3 = true;
@@ -1858,11 +1858,11 @@ void run(string file){//, string file2){
                    //Fill here 8 Feb. 2023
                    temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
                   }
-                }
+               // }
                 
                 
                 
-             }
+            // }
              
            }  
              
@@ -2111,12 +2111,12 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
             if (doMCTruthMatching){
               // std::cout << "Poodles 1" << std::endl; 
               
-              int entriesMC = (TREEMC->fChain)->GetEntries();
+            //  int entriesMC = (TREEMC->fChain)->GetEntries();
               
-              for(int iEntry=0; iEntry<entriesMC; iEntry++) {
+         //     for(int iEntry=0; iEntry<entriesMC; iEntry++) {
                 //// std::cout << "Koala bear"<< std::endl; 
-                (TREEMC->fChain)->GetEntry(iEntry);
-                if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
+         //       (TREEMC->fChain)->GetEntry(iEntry);
+    //            if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
                   // std::cout << "Poodles again!" << std::endl; 
                   
                   bool matched = false; 
@@ -2125,9 +2125,9 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found3 = false; //short for lep3
                   int found1Index = -1;
                   
-                  for (int i=0; i<(int)TREEMC->truth_Zmuon_pt->size(); i++){
+                  for (int i=0; i<(int)TREE->truth_Zmuon_pt->size(); i++){
                     TLorentzVector Z_mu_truth;
-                    Z_mu_truth.SetPtEtaPhiM(TREEMC->truth_Zmuon_pt->at(i), TREEMC->truth_Zmuon_eta->at(i), TREEMC->truth_Zmuon_phi->at(i), muon_mass);
+                    Z_mu_truth.SetPtEtaPhiM(TREE->truth_Zmuon_pt->at(i), TREE->truth_Zmuon_eta->at(i), TREE->truth_Zmuon_phi->at(i), muon_mass);
                     if (Z_mu_truth.DeltaR(lepton1) < deltaRCut){
                       // std::cout << "EUREKA" << std::endl;
                       found1Index = i;
@@ -2149,10 +2149,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found4_in_Upsi1 = false; //short for lep4
                   int found2_in_Upsi1_Index = -1;
                   
-                  for (int j = 0; j < (int)TREEMC->truth_Upsimuon_pt->size(); j++){
+                  for (int j = 0; j < (int)TREE->truth_Upsimuon_pt->size(); j++){
                     //// std::cout << "Poodle" << std::endl;
                     TLorentzVector Upsi1_mu_truth;
-                    Upsi1_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsimuon_pt->at(j), TREEMC->truth_Upsimuon_eta->at(j), TREEMC->truth_Upsimuon_phi->at(j), muon_mass);
+                    Upsi1_mu_truth.SetPtEtaPhiM(TREE->truth_Upsimuon_pt->at(j), TREE->truth_Upsimuon_eta->at(j), TREE->truth_Upsimuon_phi->at(j), muon_mass);
                     if (Upsi1_mu_truth.DeltaR(lepton2) < deltaRCut){
                       // std::cout << "EUREKA 3" << std::endl;
                       found2_in_Upsi1 = true;
@@ -2170,10 +2170,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found4_in_Upsi2 = false; //short for lep4
                   int found2_in_Upsi2_Index = -1;
                   
-                  for (int k = 0; k < (int)TREEMC->truth_Upsi2muon_pt->size(); k++){
+                  for (int k = 0; k < (int)TREE->truth_Upsi2muon_pt->size(); k++){
                     // std::cout << "Great Ape" << std::endl;
                     TLorentzVector Upsi2_mu_truth;
-                    Upsi2_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi2muon_pt->at(k), TREEMC->truth_Upsi2muon_eta->at(k), TREEMC->truth_Upsi2muon_phi->at(k), muon_mass);
+                    Upsi2_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi2muon_pt->at(k), TREE->truth_Upsi2muon_eta->at(k), TREE->truth_Upsi2muon_phi->at(k), muon_mass);
                     if (Upsi2_mu_truth.DeltaR(lepton2) < deltaRCut){
                      // // std::cout << "found2_in_Upsi2" << std::endl;
                       found2_in_Upsi2 = true;
@@ -2190,10 +2190,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found4_in_Upsi3 = false;
                   int found2_in_Upsi3_Index = -1;
                   
-                  for (int l = 0; l < (int)TREEMC->truth_Upsi3muon_pt->size(); l++){
+                  for (int l = 0; l < (int)TREE->truth_Upsi3muon_pt->size(); l++){
                    //// std::cout << "Ron Swanson" << std::endl; 
                    TLorentzVector Upsi3_mu_truth;
-                   Upsi3_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi3muon_pt->at(l), TREEMC->truth_Upsi3muon_eta->at(l), TREEMC->truth_Upsi3muon_phi->at(l), muon_mass);
+                   Upsi3_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi3muon_pt->at(l), TREE->truth_Upsi3muon_eta->at(l), TREE->truth_Upsi3muon_phi->at(l), muon_mass);
                    if (Upsi3_mu_truth.DeltaR(lepton2) < deltaRCut){
                     // // std::cout << "found2_in_Upsi3 " << std::endl;
                      found2_in_Upsi3 = true;
@@ -2273,8 +2273,8 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                     //Fill here 8 Feb. 2023
                     temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
                   }
-                }
-              }
+               // }
+             // }
             }
          } //Keep me, I am separate from the truth matching stuff you are adding
     
@@ -2496,13 +2496,13 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
             if (doMCTruthMatching){
               // std::cout << "Poodles 3" << std::endl; 
               
-              int entriesMC = (TREEMC->fChain)->GetEntries();
+        //      int entriesMC = (TREEMC->fChain)->GetEntries();
               
-              for(int iEntry=0; iEntry<entriesMC; iEntry++) {
+  //            for(int iEntry=0; iEntry<entriesMC; iEntry++) {
                 //// std::cout << "Koala bear"<< std::endl; 
-                (TREEMC->fChain)->GetEntry(iEntry);
+        //        (TREEMC->fChain)->GetEntry(iEntry);
                 
-                if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
+     //           if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
                   // std::cout << "Poodles again!" << std::endl;
                   
                   bool matched = false;
@@ -2511,9 +2511,9 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found4 = false;
                   int found2Index = -1;
                   
-                  for (int i=0; i<(int)TREEMC->truth_Zmuon_pt->size(); i++){
+                  for (int i=0; i<(int)TREE->truth_Zmuon_pt->size(); i++){
                     TLorentzVector Z_mu_truth;
-                    Z_mu_truth.SetPtEtaPhiM(TREEMC->truth_Zmuon_pt->at(i), TREEMC->truth_Zmuon_eta->at(i), TREEMC->truth_Zmuon_phi->at(i), muon_mass);
+                    Z_mu_truth.SetPtEtaPhiM(TREE->truth_Zmuon_pt->at(i), TREE->truth_Zmuon_eta->at(i), TREE->truth_Zmuon_phi->at(i), muon_mass);
                     if (Z_mu_truth.DeltaR(lepton2) < deltaRCut){
                       // std::cout << "EUREKA" << std::endl;
                       found2Index = i;
@@ -2535,10 +2535,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found3_in_Upsi1 = false; 
                   int found1_in_Upsi1_Index = -1;
                   
-                  for (int j = 0; j < (int)TREEMC->truth_Upsimuon_pt->size(); j++){
+                  for (int j = 0; j < (int)TREE->truth_Upsimuon_pt->size(); j++){
                     //// std::cout << "Poodle" << std::endl;
                     TLorentzVector Upsi1_mu_truth;
-                    Upsi1_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsimuon_pt->at(j), TREEMC->truth_Upsimuon_eta->at(j), TREEMC->truth_Upsimuon_phi->at(j), muon_mass);
+                    Upsi1_mu_truth.SetPtEtaPhiM(TREE->truth_Upsimuon_pt->at(j), TREE->truth_Upsimuon_eta->at(j), TREE->truth_Upsimuon_phi->at(j), muon_mass);
                     if (Upsi1_mu_truth.DeltaR(lepton1) < deltaRCut){
                      // // std::cout << "EUREKA 3" << std::endl;
                       found1_in_Upsi1 = true;
@@ -2556,10 +2556,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found3_in_Upsi2 = false;
                   int found1_in_Upsi2_Index = -1; 
                   
-                  for (int k = 0; k < (int)TREEMC->truth_Upsi2muon_pt->size(); k++){
+                  for (int k = 0; k < (int)TREE->truth_Upsi2muon_pt->size(); k++){
                    // // std::cout << "Great Ape" << std::endl;
                     TLorentzVector Upsi2_mu_truth;
-                    Upsi2_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi2muon_pt->at(k), TREEMC->truth_Upsi2muon_eta->at(k), TREEMC->truth_Upsi2muon_phi->at(k), muon_mass);
+                    Upsi2_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi2muon_pt->at(k), TREE->truth_Upsi2muon_eta->at(k), TREE->truth_Upsi2muon_phi->at(k), muon_mass);
                     if (Upsi2_mu_truth.DeltaR(lepton1) < deltaRCut){
                      // // std::cout << "found2_in_Upsi2" << std::endl;
                       found1_in_Upsi2 = true;
@@ -2576,10 +2576,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found3_in_Upsi3 = false;
                   int found1_in_Upsi3_Index = -1;
                   
-                  for (int l = 0; l < (int)TREEMC->truth_Upsi3muon_pt->size(); l++){
+                  for (int l = 0; l < (int)TREE->truth_Upsi3muon_pt->size(); l++){
                    //// std::cout << "Ron Swanson" << std::endl; 
                    TLorentzVector Upsi3_mu_truth;
-                   Upsi3_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi3muon_pt->at(l), TREEMC->truth_Upsi3muon_eta->at(l), TREEMC->truth_Upsi3muon_phi->at(l), muon_mass);
+                   Upsi3_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi3muon_pt->at(l), TREE->truth_Upsi3muon_eta->at(l), TREE->truth_Upsi3muon_phi->at(l), muon_mass);
                    if (Upsi3_mu_truth.DeltaR(lepton1) < deltaRCut){
                     // // std::cout << "found2_in_Upsi3 " << std::endl;
                      found1_in_Upsi3 = true;
@@ -2659,8 +2659,8 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                    temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
                  
                   }
-                }
-              }
+               // }
+             // }
             }
          } //Keep me separate from the truth matching stuff you are adding
     
@@ -2906,12 +2906,12 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
             if (doMCTruthMatching){
               // std::cout << "ELEPHANT" << std::endl; 
               
-              int entriesMC = (TREEMC->fChain)->GetEntries();
-              for(int iEntry=0; iEntry<entriesMC; iEntry++) {
+           //   int entriesMC = (TREEMC->fChain)->GetEntries();
+         //     for(int iEntry=0; iEntry<entriesMC; iEntry++) {
                 //// std::cout << "Koala bear"<< std::endl; 
-                (TREEMC->fChain)->GetEntry(iEntry);
+            //    (TREEMC->fChain)->GetEntry(iEntry);
                 
-                if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
+          //      if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
                  // // std::cout << "PLACEHOLDER" << std::endl; 
                   
                   bool matched = false;
@@ -2920,9 +2920,9 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found4 = false;
                   int found1Index = -1;
                   
-                  for (int i=0; i<(int)TREEMC->truth_Zmuon_pt->size(); i++){
+                  for (int i=0; i<(int)TREE->truth_Zmuon_pt->size(); i++){
                     TLorentzVector Z_mu_truth;
-                    Z_mu_truth.SetPtEtaPhiM(TREEMC->truth_Zmuon_pt->at(i), TREEMC->truth_Zmuon_eta->at(i), TREEMC->truth_Zmuon_phi->at(i), muon_mass);
+                    Z_mu_truth.SetPtEtaPhiM(TREE->truth_Zmuon_pt->at(i), TREE->truth_Zmuon_eta->at(i), TREE->truth_Zmuon_phi->at(i), muon_mass);
                     if (Z_mu_truth.DeltaR(lepton1) < deltaRCut){
                    // // std::cout << "EUREKA" << std::endl;
                       found1Index = i;
@@ -2944,10 +2944,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found3_in_Upsi1 = false;
                   int found2_in_Upsi1_Index = -1;
                   
-                  for (int j = 0; j < (int)TREEMC->truth_Upsimuon_pt->size(); j++){
+                  for (int j = 0; j < (int)TREE->truth_Upsimuon_pt->size(); j++){
                     //// std::cout << "Poodle" << std::endl;
                     TLorentzVector Upsi1_mu_truth;
-                    Upsi1_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsimuon_pt->at(j), TREEMC->truth_Upsimuon_eta->at(j), TREEMC->truth_Upsimuon_phi->at(j), muon_mass);
+                    Upsi1_mu_truth.SetPtEtaPhiM(TREE->truth_Upsimuon_pt->at(j), TREE->truth_Upsimuon_eta->at(j), TREE->truth_Upsimuon_phi->at(j), muon_mass);
                     if (Upsi1_mu_truth.DeltaR(lepton2) < deltaRCut){
                      // // std::cout << "EUREKA 3" << std::endl;
                       found2_in_Upsi1 = true;
@@ -2965,10 +2965,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found3_in_Upsi2 = false;
                   int found2_in_Upsi2_Index = -1;
                   
-                  for (int k = 0; k < (int)TREEMC->truth_Upsi2muon_pt->size(); k++){
+                  for (int k = 0; k < (int)TREE->truth_Upsi2muon_pt->size(); k++){
                    // // std::cout << "Great Ape" << std::endl;
                     TLorentzVector Upsi2_mu_truth;
-                    Upsi2_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi2muon_pt->at(k), TREEMC->truth_Upsi2muon_eta->at(k), TREEMC->truth_Upsi2muon_phi->at(k), muon_mass);
+                    Upsi2_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi2muon_pt->at(k), TREE->truth_Upsi2muon_eta->at(k), TREE->truth_Upsi2muon_phi->at(k), muon_mass);
                     if (Upsi2_mu_truth.DeltaR(lepton2) < deltaRCut){
                      // // std::cout << "found2_in_Upsi2" << std::endl;
                       found2_in_Upsi2 = true;
@@ -2987,10 +2987,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found3_in_Upsi3 = false;
                   int found2_in_Upsi3_Index = -1;
                   
-                  for (int l = 0; l < (int)TREEMC->truth_Upsi3muon_pt->size(); l++){
+                  for (int l = 0; l < (int)TREE->truth_Upsi3muon_pt->size(); l++){
                    //// std::cout << "Ron Swanson" << std::endl; 
                    TLorentzVector Upsi3_mu_truth;
-                   Upsi3_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi3muon_pt->at(l), TREEMC->truth_Upsi3muon_eta->at(l), TREEMC->truth_Upsi3muon_phi->at(l), muon_mass);
+                   Upsi3_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi3muon_pt->at(l), TREE->truth_Upsi3muon_eta->at(l), TREE->truth_Upsi3muon_phi->at(l), muon_mass);
                    if (Upsi3_mu_truth.DeltaR(lepton2) < deltaRCut){
                     // // std::cout << "found2_in_Upsi3 " << std::endl;
                      found2_in_Upsi3 = true;
@@ -3071,9 +3071,9 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   }
                   
                   
-                }
+              //  }
                 
-              }
+            //  }
             }
                
                
@@ -3294,11 +3294,11 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
              if (doMCTruthMatching){
                // std::cout << "Doing last set of MC Truth Matching!" << std::endl; 
                
-               int entriesMC = (TREEMC->fChain)->GetEntries();
-               for(int iEntry=0; iEntry<entriesMC; iEntry++) {
+    //           int entriesMC = (TREEMC->fChain)->GetEntries();
+   //            for(int iEntry=0; iEntry<entriesMC; iEntry++) {
                 //// std::cout << "Koala bear"<< std::endl; 
-                 (TREEMC->fChain)->GetEntry(iEntry);
-                 if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
+     //            (TREEMC->fChain)->GetEntry(iEntry);
+  //               if (TREEMC->mc_event_number->at(0) == evNumThisQuad && TREEMC->mc_run_number->at(0) == runNumThisQuad && TREEMC->mc_lumi_section->at(0) == LSThisQuad ){
                   // std::cout << "SUPER MARIO" << std::endl;
                   
                   bool matched = false; 
@@ -3307,9 +3307,9 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found3 = false;
                   int found2Index = -1;
                   
-                  for (int i=0; i<(int)TREEMC->truth_Zmuon_pt->size(); i++){
+                  for (int i=0; i<(int)TREE->truth_Zmuon_pt->size(); i++){
                     TLorentzVector Z_mu_truth;
-                    Z_mu_truth.SetPtEtaPhiM(TREEMC->truth_Zmuon_pt->at(i), TREEMC->truth_Zmuon_eta->at(i), TREEMC->truth_Zmuon_phi->at(i), muon_mass);
+                    Z_mu_truth.SetPtEtaPhiM(TREE->truth_Zmuon_pt->at(i), TREE->truth_Zmuon_eta->at(i), TREE->truth_Zmuon_phi->at(i), muon_mass);
                     if (Z_mu_truth.DeltaR(lepton2) < deltaRCut){
                    // // std::cout << "EUREKA" << std::endl;
                       found2Index = i;
@@ -3330,10 +3330,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found4_in_Upsi1 = false;
                   int found1_in_Upsi1_Index = -1;
                   
-                  for (int j = 0; j < (int)TREEMC->truth_Upsimuon_pt->size(); j++){
+                  for (int j = 0; j < (int)TREE->truth_Upsimuon_pt->size(); j++){
                     //// std::cout << "Poodle" << std::endl;
                     TLorentzVector Upsi1_mu_truth;
-                    Upsi1_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsimuon_pt->at(j), TREEMC->truth_Upsimuon_eta->at(j), TREEMC->truth_Upsimuon_phi->at(j), muon_mass);
+                    Upsi1_mu_truth.SetPtEtaPhiM(TREE->truth_Upsimuon_pt->at(j), TREE->truth_Upsimuon_eta->at(j), TREE->truth_Upsimuon_phi->at(j), muon_mass);
                     if (Upsi1_mu_truth.DeltaR(lepton1) < deltaRCut){
                      // // std::cout << "EUREKA 3" << std::endl;
                       found1_in_Upsi1 = true;
@@ -3351,10 +3351,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found4_in_Upsi2 = false;
                   int found1_in_Upsi2_Index = -1;
                   
-                  for (int k = 0; k < (int)TREEMC->truth_Upsi2muon_pt->size(); k++){
+                  for (int k = 0; k < (int)TREE->truth_Upsi2muon_pt->size(); k++){
                    // // std::cout << "Great Ape" << std::endl;
                     TLorentzVector Upsi2_mu_truth;
-                    Upsi2_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi2muon_pt->at(k), TREEMC->truth_Upsi2muon_eta->at(k), TREEMC->truth_Upsi2muon_phi->at(k), muon_mass);
+                    Upsi2_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi2muon_pt->at(k), TREE->truth_Upsi2muon_eta->at(k), TREE->truth_Upsi2muon_phi->at(k), muon_mass);
                     if (Upsi2_mu_truth.DeltaR(lepton1) < deltaRCut){
                      // // std::cout << "found2_in_Upsi2" << std::endl;
                       found1_in_Upsi2 = true;
@@ -3371,10 +3371,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   bool found4_in_Upsi3 = false;
                   int found1_in_Upsi3_Index = -1;
                   
-                  for (int l = 0; l < (int)TREEMC->truth_Upsi3muon_pt->size(); l++){
+                  for (int l = 0; l < (int)TREE->truth_Upsi3muon_pt->size(); l++){
                    //// std::cout << "Ron Swanson" << std::endl; 
                    TLorentzVector Upsi3_mu_truth;
-                   Upsi3_mu_truth.SetPtEtaPhiM(TREEMC->truth_Upsi3muon_pt->at(l), TREEMC->truth_Upsi3muon_eta->at(l), TREEMC->truth_Upsi3muon_phi->at(l), muon_mass);
+                   Upsi3_mu_truth.SetPtEtaPhiM(TREE->truth_Upsi3muon_pt->at(l), TREE->truth_Upsi3muon_eta->at(l), TREE->truth_Upsi3muon_phi->at(l), muon_mass);
                    if (Upsi3_mu_truth.DeltaR(lepton1) < deltaRCut){
                     // // std::cout << "found2_in_Upsi3 " << std::endl;
                      found1_in_Upsi3 = true;
@@ -3460,10 +3460,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   
                   
                   
-                  }
+          //        }
                 
                  
-               }
+             //  }
              }
          } //Keep me separate from the doMCTruthMatching stuff you are adding!
       }
