@@ -119,9 +119,9 @@ void run(string file){//, string file2){
   double Z_mass_true = 91.1876; //from PDG, 4 October 2022
   
   //non-boolean flags
- //  int triggerYear = 2016; //options are 2016, 2017, 2018
-  int triggerYear = 2017;
-//  int triggerYear = 2018;
+   int triggerYear = 2016; //options are 2016, 2017, 2018
+// int triggerYear = 2017;
+ // int triggerYear = 2018;
   
   std::cout << "Using triggers for year:  " << triggerYear << std::endl;
   std::cout << "//////////////////////" << std::endl;
@@ -129,7 +129,8 @@ void run(string file){//, string file2){
   
   //boolean flags
   
-  bool doMCTruthMatching = true; //code working for !doMCTruthMatching and doMCTruthMatching :)
+//  bool doMCTruthMatching = true;
+  bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
   bool applyIsoToUpsiMu = true;
 //  bool doRecoToTrigMuMatching = false;
   
@@ -305,7 +306,7 @@ void run(string file){//, string file2){
   double sublead_pT_mu_from_upsi_phi = -99;
   
   //this variable will only be meaningful when doing MC Truth Matching
-  int upsi_type = -1; //upsi_type = 1 corresponds to the upsi(1S), upsi_type = 2 corresponds to the upsi(2S), upsi_type = 3 corresponds to the upsi(3S)
+  double upsi_type = -1; //upsi_type = 1 corresponds to the upsi(1S), upsi_type = 2 corresponds to the upsi(2S), upsi_type = 3 corresponds to the upsi(3S)
   
   double lead_pT_mu_from_upsi_pfIso = -99;
   double sublead_pT_mu_from_upsi_pfIso = -99;
@@ -316,7 +317,7 @@ void run(string file){//, string file2){
  
    
   
-  TFile *ntuple = new TFile("test5_27March2023_ntuple_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_myNewFile_2017.root", "RECREATE");
+  TFile *ntuple = new TFile("12April2023_ntuple_v3_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_12July2022_Run2016_Total.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -425,7 +426,7 @@ void run(string file){//, string file2){
     std::vector<double> temp_sublead_pT_mu_from_upsi_RAPIDITY;
     std::vector<double> temp_sublead_pT_mu_from_upsi_phi;
     
-    std::vector<int> temp_upsi_type;
+    std::vector<double> temp_upsi_type;
     
     std::vector<double> temp_lead_pT_mu_from_upsi_pfIso;
     std::vector<double> temp_sublead_pT_mu_from_upsi_pfIso;
