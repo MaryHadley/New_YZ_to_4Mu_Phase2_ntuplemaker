@@ -31,6 +31,18 @@ int myAdd(int a, int b){
 
 }
 
+double unsignedDeltaPhi(double phi1, double phi2){
+
+  double dphi = fabs(phi1 - phi2);
+
+  while (dphi > TMath::Pi()) {
+    dphi -= 2. * TMath::Pi();
+  }
+
+  return dphi;
+
+}
+
 void run(string file){//, string file2){
 
   // l o a d   t h e   t r e e s 
@@ -126,6 +138,10 @@ void run(string file){//, string file2){
   std::cout << "Using triggers for year:  " << triggerYear << std::endl;
   std::cout << "//////////////////////" << std::endl;
 //  std::cout << "myAdd(3,5) "<< myAdd(3,5) << std::endl;
+
+//  std::cout << "unsignedDeltaPhi(-8. *TMath::Pi(), 2. * TMath::Pi()):  " << unsignedDeltaPhi(-8. *TMath::Pi(), 2. * TMath::Pi() ) << std::endl;
+  
+//  std::cout << "unsignedDeltaPhi(-8. *TMath::Pi(), 1. * TMath::Pi()):  " << unsignedDeltaPhi(-8. *TMath::Pi(), 1. * TMath::Pi() ) << std::endl;
   
   //boolean flags
   
