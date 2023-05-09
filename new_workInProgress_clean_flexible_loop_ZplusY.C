@@ -119,9 +119,9 @@ void run(string file){//, string file2){
   double Z_mass_true = 91.1876; //from PDG, 4 October 2022
   
   //non-boolean flags
-   int triggerYear = 2016; //options are 2016, 2017, 2018
+ //  int triggerYear = 2016; //options are 2016, 2017, 2018
 // int triggerYear = 2017;
- // int triggerYear = 2018;
+  int triggerYear = 2018;
   
   std::cout << "Using triggers for year:  " << triggerYear << std::endl;
   std::cout << "//////////////////////" << std::endl;
@@ -133,6 +133,8 @@ void run(string file){//, string file2){
   bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
   bool applyIsoToUpsiMu = true;
 //  bool doRecoToTrigMuMatching = false;
+  
+  bool useGlobalMuons = true;
   
   if (!doMCTruthMatching){
      std::cout << "NOT performing MC truth matching" << std::endl;
@@ -165,6 +167,16 @@ void run(string file){//, string file2){
 //     std::cout << "///////////////////////////////////////////" << std::endl;
 //   }
 //   
+   
+  if (!useGlobalMuons){
+    std::cout << "NOT requiring that muons from upsilon be Global Muons" << std::endl;
+    std::cout << "/////////////////////////////////////////////////////" << std::endl;
+  }
+  
+  if (useGlobalMuons){
+    std::cout << "REQUIRING that muons from upsilon be Global Muons" << std::endl;
+    std::cout << "/////////////////////////////////////////////////" << std::endl;
+  }
   
   
   //counters
@@ -239,7 +251,7 @@ void run(string file){//, string file2){
   
   double sublead_mu_from_Z_pT_Cut = 15;
   
-  double mu_from_upsi_pT_Cut = 4; //We could lower this and gain back a lot of muons, is it worth it in terms of signal to background trade off? TO DISCUSS
+  double mu_from_upsi_pT_Cut = 3.; //4; //We could lower this and gain back a lot of muons, is it worth it in terms of signal to background trade off? TO DISCUSS
   
   double mu_from_Z_eta_Cut = 2.4;
   
@@ -317,7 +329,7 @@ void run(string file){//, string file2){
  
    
   
-  TFile *ntuple = new TFile("12April2023_ntuple_v3_pfIso0p35forZmu_0p7forUpsiMu_inputFileIs_12July2022_Run2016_Total.root", "RECREATE");
+  TFile *ntuple = new TFile("9May2023_ntuple_v3_pfIso0p35forZmu_0p7forUpsiMu_upsiMuPtCut3_useGlobalMuons_inputFileIs_12July2022_Run2018_Total.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -1083,6 +1095,13 @@ void run(string file){//, string file2){
                continue; 
            }
            
+           if (useGlobalMuons){
+             if (TREE->lepton3_isGlobalMuon->at(i) + TREE->lepton4_isGlobalMuon->at(i) != 2){
+               continue;
+             }
+           
+           }
+           
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(11);
           // if ( fabs(lepton3.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton4.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
                if (   fabs((lepton3 + lepton4).Rapidity()) > upsi_RAPIDITY_Cut ){
@@ -1536,6 +1555,13 @@ void run(string file){//, string file2){
                // std::cout << "FAILED mu from upsi must be soft cut" << std::endl;
                continue; 
            }
+           
+           if (useGlobalMuons){
+             if (TREE->lepton1_isGlobalMuon->at(i) + TREE->lepton2_isGlobalMuon->at(i) != 2){
+               continue;
+             }
+           
+           }
             
             if //( fabs(lepton1.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton2.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
                 
@@ -1958,6 +1984,13 @@ void run(string file){//, string file2){
              
             }
             
+            if (useGlobalMuons){
+             if (TREE->lepton2_isGlobalMuon->at(i) + TREE->lepton4_isGlobalMuon->at(i) != 2){
+               continue;
+             }
+           
+           }
+            
             //if //( fabs(lepton2.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton4.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
             if  ( fabs((lepton2 + lepton4).Rapidity()) > upsi_RAPIDITY_Cut){
                 // std::cout << "FAILED upsi RAPIDITY cut!" << std::endl;
@@ -2337,6 +2370,13 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                // std::cout << "FAILED mu from upsi must be soft cut" << std::endl;
                continue; 
             }
+            
+            if (useGlobalMuons){
+             if (TREE->lepton1_isGlobalMuon->at(i) + TREE->lepton3_isGlobalMuon->at(i) != 2){
+               continue;
+             }
+           
+           }
             
             if //( fabs(lepton1.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton3.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
                
@@ -2751,6 +2791,13 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                continue; 
             }
             
+            if (useGlobalMuons){
+             if (TREE->lepton2_isGlobalMuon->at(i) + TREE->lepton3_isGlobalMuon->at(i) != 2){
+               continue;
+             }
+           
+           }
+            
             if //( fabs(lepton2.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton3.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
                ( fabs ((lepton2 + lepton3).Rapidity()) > upsi_RAPIDITY_Cut){
                // std::cout << "FAILED  upsi RAPIDITY cut" << std::endl;
@@ -3140,6 +3187,13 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                 // std::cout << "FAILED mu from upsi must be soft cut!" << std::endl; 
                 continue ; 
              }
+             
+             if (useGlobalMuons){
+             if (TREE->lepton1_isGlobalMuon->at(i) + TREE->lepton4_isGlobalMuon->at(i) != 2){
+               continue;
+             }
+           
+           }
              
              if //( fabs(lepton1.Rapidity()) > mu_from_upsi_RAPIDITY_Cut || fabs(lepton4.Rapidity()) > mu_from_upsi_RAPIDITY_Cut ){
                 ( fabs ((lepton1 + lepton4).Rapidity()) > upsi_RAPIDITY_Cut) {
