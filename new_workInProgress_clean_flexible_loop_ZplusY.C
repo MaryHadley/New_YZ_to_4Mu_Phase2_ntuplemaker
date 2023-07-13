@@ -39,7 +39,7 @@ double unsignedDeltaPhi(double phi1, double phi2){
     dphi -= 2. * TMath::Pi();
   }
 
-  return dphi;
+  return fabs(dphi);
 
 }
 
@@ -150,8 +150,9 @@ void run(string file){//, string file2){
   bool applyIsoToUpsiMu = true;
 //  bool doRecoToTrigMuMatching = false;
   
-  bool useGlobalMuons = true;
-  
+//  bool useGlobalMuons = true;
+    bool useGlobalMuons = false;
+
   if (!doMCTruthMatching){
      std::cout << "NOT performing MC truth matching" << std::endl;
      std::cout << "////////////////////////////////" << std::endl;
@@ -342,10 +343,12 @@ void run(string file){//, string file2){
   double sublead_pT_mu_from_Z_pfIso = -99;
   
   double big4MuVtxProb = -99;
- 
+  
+  double deltaPhi_upsiZ = -99; //Order does NOT matter here, this could just as well be deltaPhi_ZUpsi
+  double deltaRAP_upsiZ = -99; //Order does NOT matter here, this could just as well be deltaRAP_ZUpsi
    
   
-  TFile *ntuple = new TFile("9May2023_ntuple_v3_pfIso0p35forZmu_0p7forUpsiMu_upsiMuPtCut3_useGlobalMuons_inputFileIs_12July2022_Run2018_Total.root", "RECREATE");
+  TFile *ntuple = new TFile("12July2023_ntuple_v3_pfIso0p35forZmu_0p7forUpsiMu_upsiMuPtCut3_useGlobalMuonsFalse_inputFileIs_12July2022_Run2018_Total.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -395,6 +398,9 @@ void run(string file){//, string file2){
   aux->Branch("sublead_pT_mu_from_Z_pfIso", &sublead_pT_mu_from_Z_pfIso);
   
   aux->Branch("big4MuVtxProb", &big4MuVtxProb);
+  
+  aux->Branch("deltaPhi_upsiZ", &deltaPhi_upsiZ);
+  aux->Branch("deltaRAP_upsiZ", &deltaRAP_upsiZ);
 
 ///////////////////////////
 //////    D A T A    //////
@@ -463,6 +469,9 @@ void run(string file){//, string file2){
     
     std::vector<double> temp_big4MuVtxProb;
     
+    std::vector<double> temp_deltaPhi_upsiZ;
+    std::vector<double> temp_deltaRAP_upsiZ;
+    
     temp_Z_mass.clear();
     
     
@@ -507,6 +516,9 @@ void run(string file){//, string file2){
     temp_sublead_pT_mu_from_Z_pfIso.clear();
     
     temp_big4MuVtxProb.clear();
+    
+    temp_deltaPhi_upsiZ.clear();
+    temp_deltaRAP_upsiZ.clear();
     
     mass1_quickAndDirty = 0.; mass2_quickAndDirty = 0.;
     
@@ -1312,6 +1324,14 @@ void run(string file){//, string file2){
             //FILL HERE 8 Feb. 2023
             temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
         //    std::cout << "(TREE->big4MuVtx->at(i))  " << (TREE->big4MuVtx->at(i)) << std::endl;
+          
+           temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton2).Phi(), (lepton3 + lepton4).Phi())); //In this case, first argument is the phi of the Z, second argument is the phi of the upsi
+        //   std::cout << unsignedDeltaPhi((lepton1 + lepton2).Phi(), (lepton3 + lepton4).Phi()) << std::endl;
+           temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton2).Rapidity() -(lepton3 + lepton4).Rapidity())); //In this case, first argument is the rapidity of the Z, second argument is the rapidity of the upsi
+         //  std::cout << "Checking delta RAPIDITY" << std::endl;
+         //  std::cout << (lepton1 + lepton2).Rapidity() << std::endl;
+         //  std::cout << (lepton3 + lepton4).Rapidity() << std::endl;
+         //  std::cout << fabs((lepton1 + lepton2).Rapidity() -(lepton3 + lepton4).Rapidity()) << std::endl;
            
            }
             GotHereCount_Z_first_upsi_phase1_second_pair_12_34_56 += 1;
@@ -1495,7 +1515,9 @@ void run(string file){//, string file2){
                  
                  //Fill here 8 Feb. 2023
                  temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
-                
+                 temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton2).Phi(), (lepton3 + lepton4).Phi())); //Again here we have the phi of Z as the first argument and phi of upsi as the second argument
+                 temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton2).Rapidity() -(lepton3 + lepton4).Rapidity())); //Again here we have the rap of the Z as the first argument and the rap of the upsi as the second argument 
+                 
                  }
                  
              //   }
@@ -1735,6 +1757,9 @@ void run(string file){//, string file2){
              
              //Fill here 8 Feb. 2023
               temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
+              temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton2).Phi(), (lepton3 + lepton4).Phi())); //This time we have phi of upsi as first argument and phi of Z as second argument
+              temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton2).Rapidity() -(lepton3 + lepton4).Rapidity())); //This time we have rap of the upsi as the first argument and rap of the Z as the second argument 
+              
              }
            
            //flag Begin MC Truth Matching section here
@@ -1900,6 +1925,9 @@ void run(string file){//, string file2){
                   
                    //Fill here 8 Feb. 2023
                    temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
+                 
+                   temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton2).Phi(), (lepton3 + lepton4).Phi())); // Phi of upsi as first argument, phi of Z as second argument
+                   temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton2).Rapidity() -(lepton3 + lepton4).Rapidity())); //Rap of upsi as first argument, rap of Z as second argument
                   }
                // }
                 
@@ -2155,6 +2183,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                //Fill here 8 Feb. 2023
                temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
                
+               temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton3).Phi(), (lepton2 + lepton4).Phi())); //Phi of Z as first argument, phi of upsi as second argument 
+               temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton3).Rapidity() -(lepton2 + lepton4).Rapidity())); //Rap of Z as first argument, rap of upsi as second argument
+               
+               
               }
             
             //flag Poodles 
@@ -2322,6 +2354,11 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                     
                     //Fill here 8 Feb. 2023
                     temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
+                    
+                    temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton3).Phi(), (lepton2 + lepton4).Phi())); //Phi of Z as first argument, phi of upsi as second argument
+                    
+                    temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton3).Rapidity() -(lepton2 + lepton4).Rapidity())); //Rap of Z as first argument, rap of upsi as second argument
+                  
                   }
                // }
              // }
@@ -2547,7 +2584,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                 
                 //Fill here 8 Feb. 2023
                 temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
-             
+                
+                temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton3).Phi(), (lepton2 + lepton4).Phi())); //Phi of upsi as first argument, phi of Z as second argument
+                temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton3).Rapidity() -(lepton2 + lepton4).Rapidity())); //Rap of upsi as first argument, rap of Z as second argument
+                
               }
             
             if (doMCTruthMatching){
@@ -2714,7 +2754,9 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                    
                    //Fill here 8 Feb. 2023
                    temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
-                 
+                   
+                   temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton3).Phi(), (lepton2 + lepton4).Phi())); //Phi of upsi as first argument, phi of Z as second argument
+                   temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton3).Rapidity() -(lepton2 + lepton4).Rapidity())); //Rap of upsi as first argument, rap of Z as second argument
                   }
                // }
              // }
@@ -2964,7 +3006,9 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                  
                  //Fill here 8 Feb. 2023
                  temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
-           
+                 
+                 temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton4).Phi(), (lepton2 + lepton3).Phi())); //Phi of Z as first argument, phi of upsi as second argument
+                 temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton4).Rapidity() -(lepton2 + lepton3).Rapidity())); //Rap of Z as first argument, rap of upsi as second argument
             }
               
             if (doMCTruthMatching){
@@ -3131,7 +3175,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   
                    //Fill here 8 Feb. 2023
                    temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
-                  
+                   
+                   temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton4).Phi(), (lepton2 + lepton3).Phi())); //Phi of Z as first argument, phi of upsi as second argument
+                   temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton4).Rapidity() -(lepton2 + lepton3).Rapidity())); //Rap of Z as first argument, rap of upsi as second argument
+                   
                   }
                   
                   
@@ -3359,7 +3406,9 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   
                   //Fill here 8 Feb. 2023
                   temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
-               
+                  
+                  temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton4).Phi(), (lepton2 + lepton3).Phi())); //Phi of upsi as first argument, phi of Z as second argument
+                  temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton4).Rapidity() -(lepton2 + lepton3).Rapidity())); //Rap of upsi as first argument, rap of Z as second argument
                 }
              
              if (doMCTruthMatching){
@@ -3523,6 +3572,9 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   //Fill here 8 Feb. 2023
                   temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
                   
+                  temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton4).Phi(), (lepton2 + lepton3).Phi())); //Phi of upsi as first argument, phi of Z as second argument
+                  temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton4).Rapidity() -(lepton2 + lepton3).Rapidity())); //Rap of upsi as first argument, rap of Z as second argument 
+                  
                   }
                   
                   
@@ -3644,6 +3696,9 @@ for (int jj=0; jj<(int)temp_big4MuVtxProb.size(); jj++)   {
      sublead_pT_mu_from_Z_pfIso = temp_sublead_pT_mu_from_Z_pfIso.at(jj);
      
      big4MuVtxProb = temp_big4MuVtxProb.at(jj);
+     
+     deltaPhi_upsiZ = temp_deltaPhi_upsiZ.at(jj);
+     deltaRAP_upsiZ = temp_deltaRAP_upsiZ.at(jj);
      
      
      if (doMCTruthMatching){
