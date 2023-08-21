@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Sun Mar 26 16:03:11 2023 by ROOT version 6.14/09
+// Mon Aug  7 18:45:28 2023 by ROOT version 6.14/09
 // from TTree tree/tree
-// found on file: myNewFile.root
+// found on file: myNewFile_SPS_2018_Y1SZ_test.root
 //////////////////////////////////////////////////////////
 
 #ifndef tree_h
@@ -221,6 +221,8 @@ public :
    vector<double>  *truth_Upsi3muon_pt;
    vector<double>  *truth_Upsi3muon_eta;
    vector<double>  *truth_Upsi3muon_phi;
+   vector<double>  *SPS_LHE_Weight;
+   vector<double>  *SPS_Subprocess_XSec;
 
    // List of branches
    TBranch        *b_event_number;   //!
@@ -415,6 +417,8 @@ public :
    TBranch        *b_truth_Upsi3muon_pt;   //!
    TBranch        *b_truth_Upsi3muon_eta;   //!
    TBranch        *b_truth_Upsi3muon_phi;   //!
+   TBranch        *b_SPS_LHE_Weight;   //!
+   TBranch        *b_SPS_Subprocess_XSec;   //!
 
    tree(TTree *tree=0);
    virtual ~tree();
@@ -435,15 +439,16 @@ public :
 // // if parameter tree is not specified (or zero), connect the file
 // // used to generate this class and read the Tree.
 //    if (tree == 0) {
-//       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("myNewFile.root");
+//       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("myNewFile_SPS_2018_Y1SZ_test.root");
 //       if (!f || !f->IsOpen()) {
-//          f = new TFile("myNewFile.root");
+//          f = new TFile("myNewFile_SPS_2018_Y1SZ_test.root");
 //       }
 //       f->GetObject("tree",tree);
 // 
 //    }
 //    Init(tree);
 // }
+
 tree::tree(TTree *tree) : fChain(0)
 {
 //if parameter tree is not specified (or zero), connect the file
@@ -458,6 +463,7 @@ tree::tree(TTree *tree) : fChain(0)
    }
    Init(tree);
 }
+
 
 tree::~tree()
 {
@@ -683,6 +689,8 @@ void tree::Init(TTree *tree)
    truth_Upsi3muon_pt = 0;
    truth_Upsi3muon_eta = 0;
    truth_Upsi3muon_phi = 0;
+   SPS_LHE_Weight = 0;
+   SPS_Subprocess_XSec = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -881,6 +889,8 @@ void tree::Init(TTree *tree)
    fChain->SetBranchAddress("truth_Upsi3muon_pt", &truth_Upsi3muon_pt, &b_truth_Upsi3muon_pt);
    fChain->SetBranchAddress("truth_Upsi3muon_eta", &truth_Upsi3muon_eta, &b_truth_Upsi3muon_eta);
    fChain->SetBranchAddress("truth_Upsi3muon_phi", &truth_Upsi3muon_phi, &b_truth_Upsi3muon_phi);
+   fChain->SetBranchAddress("SPS_LHE_Weight", &SPS_LHE_Weight, &b_SPS_LHE_Weight);
+   fChain->SetBranchAddress("SPS_Subprocess_XSec", &SPS_Subprocess_XSec, &b_SPS_Subprocess_XSec);
    Notify();
 }
 

@@ -145,14 +145,16 @@ void run(string file){//, string file2){
   
   //boolean flags
   
-//  bool doMCTruthMatching = true;
-  bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
+  bool doMCTruthMatching = true;
+//  bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
   bool applyIsoToUpsiMu = true;
 //  bool doRecoToTrigMuMatching = false;
   
 //  bool useGlobalMuons = true;
     bool useGlobalMuons = false;
-
+ //   bool applySPSWeights = false;
+    bool applySPSWeights = true;
+    
   if (!doMCTruthMatching){
      std::cout << "NOT performing MC truth matching" << std::endl;
      std::cout << "////////////////////////////////" << std::endl;
@@ -195,6 +197,15 @@ void run(string file){//, string file2){
     std::cout << "/////////////////////////////////////////////////" << std::endl;
   }
   
+  if (!applySPSWeights){
+    std::cout << "NOT applying SPS weights! Make sure you are running on data or DPS MC!" << std::endl;
+    std::cout << "//////////////////////////////////////////////////////////////////////" << std::endl;
+  }
+  
+  if (applySPSWeights){
+    std::cout << "APPLYING SPS weights! Make sure you are running on SPS MC!" << std::endl;
+    std::cout << "//////////////////////////////////////////////////////////" << std::endl;
+  }
   
   //counters
   int pair_12_34_56_count = 0;
@@ -344,11 +355,16 @@ void run(string file){//, string file2){
   
   double big4MuVtxProb = -99;
   
+  //Variables useful for distinguishing between SPS and DPS
   double deltaPhi_upsiZ = -99; //Order does NOT matter here, this could just as well be deltaPhi_ZUpsi
   double deltaRAP_upsiZ = -99; //Order does NOT matter here, this could just as well be deltaRAP_ZUpsi
-   
   
-  TFile *ntuple = new TFile("12July2023_ntuple_v3_pfIso0p35forZmu_0p7forUpsiMu_upsiMuPtCut3_useGlobalMuonsFalse_inputFileIs_12July2022_Run2018_Total.root", "RECREATE");
+  //SPS specific variables
+  double SPS_LHE_Weight = -99;
+  double SPS_Subprocess_XSec = -99;
+  double weightToApply = -99; 
+  
+  TFile *ntuple = new TFile("14August2023_ntuple_v3_pfIso0p35forZmu_0p7forUpsiMu_upsiMuPtCut3_useGlobalMuonsFalse_doMCTruthMatchingTrue_inputFileIs_myNewFile_SPS_2018_Y1SZ_test.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -401,6 +417,10 @@ void run(string file){//, string file2){
   
   aux->Branch("deltaPhi_upsiZ", &deltaPhi_upsiZ);
   aux->Branch("deltaRAP_upsiZ", &deltaRAP_upsiZ);
+  
+  aux->Branch("SPS_LHE_Weight", &SPS_LHE_Weight);
+  aux->Branch("SPS_Subprocess_XSec", &SPS_Subprocess_XSec);
+  aux->Branch("weightToApply", &weightToApply);
 
 ///////////////////////////
 //////    D A T A    //////
@@ -472,6 +492,10 @@ void run(string file){//, string file2){
     std::vector<double> temp_deltaPhi_upsiZ;
     std::vector<double> temp_deltaRAP_upsiZ;
     
+    std::vector<double> temp_SPS_LHE_Weight;
+    std::vector<double> temp_SPS_Subprocess_XSec;
+    std::vector<double> temp_weightToApply;
+    
     temp_Z_mass.clear();
     
     
@@ -519,6 +543,10 @@ void run(string file){//, string file2){
     
     temp_deltaPhi_upsiZ.clear();
     temp_deltaRAP_upsiZ.clear();
+    
+    temp_SPS_LHE_Weight.clear();
+    temp_SPS_Subprocess_XSec.clear();
+    temp_weightToApply.clear();
     
     mass1_quickAndDirty = 0.; mass2_quickAndDirty = 0.;
     
@@ -689,7 +717,32 @@ void run(string file){//, string file2){
    if (event_fails_trigger){
      continue;
    }
+   
+   //SPS XSec and weights handled below
+   
+   if (!applySPSWeights){
+     SPS_LHE_Weight = -1;
+     SPS_Subprocess_XSec = -1;
+     weightToApply = 1;
+   }
+   
+   if (applySPSWeights){
+    // std::cout << TREE->SPS_LHE_Weight->at(0) << std::endl;
+    SPS_LHE_Weight = TREE->SPS_LHE_Weight->at(0);
+    SPS_Subprocess_XSec = TREE->SPS_Subprocess_XSec->at(0);
     
+    //SPS_LHE_Weight has units of picobarns. To convert from picobarns to femtobarns, multiply by 1000 (i.e.: 1 picobarn = 1000 femtobarns). 
+    //Then, to scale to size of CMS data set and end up with a unitless quantity for the weight, multiply by 138 fb^-1
+    //Therefore, our unitless weightToApply = SPS_LHE_Weight * 138000.
+    
+    weightToApply = SPS_LHE_Weight * 138000.;
+   
+   }
+   
+   
+   
+   
+   
  //   survivor_Z_first_upsi_phase1_second_pair_12_34_56 = false; //I think I don't need this 
    // int enteredLepLoopCount = 0;
 //   std::cout << "TREE->lepton1_pt->size(): " << TREE->lepton1_pt->size() << std::endl; 
@@ -1333,6 +1386,9 @@ void run(string file){//, string file2){
          //  std::cout << (lepton3 + lepton4).Rapidity() << std::endl;
          //  std::cout << fabs((lepton1 + lepton2).Rapidity() -(lepton3 + lepton4).Rapidity()) << std::endl;
            
+           temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+           temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+           temp_weightToApply.push_back(weightToApply);
            }
             GotHereCount_Z_first_upsi_phase1_second_pair_12_34_56 += 1;
            //then I would have to write a new if doMCTruthMatching block, do the truth matching // flagPoodle
@@ -1517,6 +1573,11 @@ void run(string file){//, string file2){
                  temp_big4MuVtxProb.push_back((TREE->big4MuVtx->at(i)));
                  temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton2).Phi(), (lepton3 + lepton4).Phi())); //Again here we have the phi of Z as the first argument and phi of upsi as the second argument
                  temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton2).Rapidity() -(lepton3 + lepton4).Rapidity())); //Again here we have the rap of the Z as the first argument and the rap of the upsi as the second argument 
+                 
+                 temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+                 temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+                 temp_weightToApply.push_back(weightToApply);
+                 
                  
                  }
                  
@@ -1760,6 +1821,10 @@ void run(string file){//, string file2){
               temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton2).Phi(), (lepton3 + lepton4).Phi())); //This time we have phi of upsi as first argument and phi of Z as second argument
               temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton2).Rapidity() -(lepton3 + lepton4).Rapidity())); //This time we have rap of the upsi as the first argument and rap of the Z as the second argument 
               
+              temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+              temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+              temp_weightToApply.push_back(weightToApply);
+              
              }
            
            //flag Begin MC Truth Matching section here
@@ -1928,6 +1993,11 @@ void run(string file){//, string file2){
                  
                    temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton2).Phi(), (lepton3 + lepton4).Phi())); // Phi of upsi as first argument, phi of Z as second argument
                    temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton2).Rapidity() -(lepton3 + lepton4).Rapidity())); //Rap of upsi as first argument, rap of Z as second argument
+                   
+                   temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+                   temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+                   temp_weightToApply.push_back(weightToApply);
+                  
                   }
                // }
                 
@@ -2186,6 +2256,9 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton3).Phi(), (lepton2 + lepton4).Phi())); //Phi of Z as first argument, phi of upsi as second argument 
                temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton3).Rapidity() -(lepton2 + lepton4).Rapidity())); //Rap of Z as first argument, rap of upsi as second argument
                
+               temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+               temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+               temp_weightToApply.push_back(weightToApply);
                
               }
             
@@ -2358,7 +2431,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                     temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton3).Phi(), (lepton2 + lepton4).Phi())); //Phi of Z as first argument, phi of upsi as second argument
                     
                     temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton3).Rapidity() -(lepton2 + lepton4).Rapidity())); //Rap of Z as first argument, rap of upsi as second argument
-                  
+                    
+                    temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+                    temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+                    temp_weightToApply.push_back(weightToApply);
                   }
                // }
              // }
@@ -2588,6 +2664,11 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                 temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton3).Phi(), (lepton2 + lepton4).Phi())); //Phi of upsi as first argument, phi of Z as second argument
                 temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton3).Rapidity() -(lepton2 + lepton4).Rapidity())); //Rap of upsi as first argument, rap of Z as second argument
                 
+                temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+                temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+                temp_weightToApply.push_back(weightToApply);
+                
+                
               }
             
             if (doMCTruthMatching){
@@ -2757,6 +2838,12 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                    
                    temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton3).Phi(), (lepton2 + lepton4).Phi())); //Phi of upsi as first argument, phi of Z as second argument
                    temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton3).Rapidity() -(lepton2 + lepton4).Rapidity())); //Rap of upsi as first argument, rap of Z as second argument
+                  
+                  temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+                  temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+                  temp_weightToApply.push_back(weightToApply);
+                  
+                  
                   }
                // }
              // }
@@ -3009,6 +3096,12 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                  
                  temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton4).Phi(), (lepton2 + lepton3).Phi())); //Phi of Z as first argument, phi of upsi as second argument
                  temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton4).Rapidity() -(lepton2 + lepton3).Rapidity())); //Rap of Z as first argument, rap of upsi as second argument
+                 
+                 temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+                 temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+                 temp_weightToApply.push_back(weightToApply);
+            
+            
             }
               
             if (doMCTruthMatching){
@@ -3178,6 +3271,10 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                    
                    temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton4).Phi(), (lepton2 + lepton3).Phi())); //Phi of Z as first argument, phi of upsi as second argument
                    temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton4).Rapidity() -(lepton2 + lepton3).Rapidity())); //Rap of Z as first argument, rap of upsi as second argument
+                   
+                   temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+                   temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+                   temp_weightToApply.push_back(weightToApply);
                    
                   }
                   
@@ -3409,6 +3506,12 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   
                   temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton4).Phi(), (lepton2 + lepton3).Phi())); //Phi of upsi as first argument, phi of Z as second argument
                   temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton4).Rapidity() -(lepton2 + lepton3).Rapidity())); //Rap of upsi as first argument, rap of Z as second argument
+                  
+                  temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+                  temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+                  temp_weightToApply.push_back(weightToApply);
+                
+                
                 }
              
              if (doMCTruthMatching){
@@ -3575,6 +3678,11 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   temp_deltaPhi_upsiZ.push_back(unsignedDeltaPhi((lepton1 + lepton4).Phi(), (lepton2 + lepton3).Phi())); //Phi of upsi as first argument, phi of Z as second argument
                   temp_deltaRAP_upsiZ.push_back(fabs((lepton1 + lepton4).Rapidity() -(lepton2 + lepton3).Rapidity())); //Rap of upsi as first argument, rap of Z as second argument 
                   
+                  temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
+                  temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
+                  temp_weightToApply.push_back(weightToApply);
+                  
+                  
                   }
                   
                   
@@ -3699,6 +3807,10 @@ for (int jj=0; jj<(int)temp_big4MuVtxProb.size(); jj++)   {
      
      deltaPhi_upsiZ = temp_deltaPhi_upsiZ.at(jj);
      deltaRAP_upsiZ = temp_deltaRAP_upsiZ.at(jj);
+     
+     SPS_LHE_Weight = temp_SPS_LHE_Weight.at(jj);
+     SPS_Subprocess_XSec = temp_SPS_Subprocess_XSec.at(jj);
+     weightToApply = temp_weightToApply.at(jj);
      
      
      if (doMCTruthMatching){
