@@ -364,7 +364,7 @@ void run(string file){//, string file2){
   double SPS_Subprocess_XSec = -99;
   double weightToApply = -99; 
   
-  TFile *ntuple = new TFile("14August2023_ntuple_v3_pfIso0p35forZmu_0p7forUpsiMu_upsiMuPtCut3_useGlobalMuonsFalse_doMCTruthMatchingTrue_inputFileIs_myNewFile_SPS_2018_Y1SZ_test.root", "RECREATE");
+  TFile *ntuple = new TFile("14September2023_ntuple_v3_pfIso0p35forZmu_0p7forUpsiMu_upsiMuPtCut3_useGlobalMuonsFalse_doMCTruthMatchingTrue_inputFileIs_myNewFile_from_flatFile_MC_SPS_Y1SZ.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -3825,8 +3825,10 @@ for (int jj=0; jj<(int)temp_big4MuVtxProb.size(); jj++)   {
       
       
       }
-     aux->Fill();
-    }
+  if (my_counter == (double)temp_big4MuVtxProb.size()){
+  aux->Fill();
+  }
+}
   //    fillCount += 1;
   //    aux->Fill();
     
