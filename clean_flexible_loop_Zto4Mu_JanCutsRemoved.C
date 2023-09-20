@@ -91,17 +91,17 @@ void run(string file){
    
    //boolean flags
    
-   bool doRecoToTrigMuMatching = false;
-   
-   if (!doRecoToTrigMuMatching){
-     std::cout << "NOT including the reco muon to trigger muon matching cut" << std::endl;
-     std::cout << "///////////////////////////////////////////////////////" << std::endl;
-   }
-   
-   if (doRecoToTrigMuMatching){
-     std::cout << "INCLUDING the reco muon to trigger muon matching cut" << std::endl;
-     std::cout << "////////////////////////////////////////////////////" << std::endl;
-   }
+  //  bool doRecoToTrigMuMatching = false;
+//    
+//    if (!doRecoToTrigMuMatching){
+//      std::cout << "NOT including the reco muon to trigger muon matching cut" << std::endl;
+//      std::cout << "///////////////////////////////////////////////////////" << std::endl;
+//    }
+//    
+//    if (doRecoToTrigMuMatching){
+//      std::cout << "INCLUDING the reco muon to trigger muon matching cut" << std::endl;
+//      std::cout << "////////////////////////////////////////////////////" << std::endl;
+//    }
    
   //Cuts
   
@@ -158,7 +158,9 @@ void run(string file){
   double lepton3_phi = -99;
   double lepton4_phi = -99;
   
-  TFile *ntuple = new TFile("2Nov2022_clean_flexible_loop_Zto4Mu_inputFileIs_12July2022_Run2018_Total_noTrigToRecoMuMatching_JanCutsRemoved.root", "RECREATE");
+  double big4MuVtxProb = -99;
+  
+  TFile *ntuple = new TFile("20September2023_clean_flexible_loop_Zto4Mu_inputFileIs_12July2022_Run2018_Total_test4.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   
@@ -202,6 +204,8 @@ void run(string file){
   aux->Branch("lepton4_eta", &lepton4_eta);
   aux->Branch("lepton4_phi", &lepton4_phi);
   
+  //  big4MuVtxProb branch
+  aux->Branch("big4MuVtxProb", &big4MuVtxProb);
   
   int eventCounter = 0;
   
@@ -246,6 +250,8 @@ void run(string file){
     std::vector<double> temp_lep4_eta;
     std::vector<double> temp_lep4_phi;
     
+    std::vector<double> temp_big4MuVtxProb;
+    
     
     temp_Z_mass.clear();
     temp_Z_pT.clear();
@@ -277,6 +283,8 @@ void run(string file){
     temp_lep4_pT.clear();
     temp_lep4_eta.clear();
     temp_lep4_phi.clear();
+    
+    temp_big4MuVtxProb.clear();
    
     //handle the trigger
    
@@ -608,11 +616,11 @@ void run(string file){
       
        h_cutflow_allQuadCuts->Fill(12); //quads in which the trailing two leptons satisfy the lep_dz_Cut requirements 
       
-      if (doRecoToTrigMuMatching){ 
-        if (TREE->quadHasHowManyTrigMatches->at(i) < 2) {
-          continue;
-        }
-      }
+    //   if (doRecoToTrigMuMatching){ 
+//         if (TREE->quadHasHowManyTrigMatches->at(i) < 2) {
+//           continue;
+//         }
+//       }
       
       h_cutflow_allQuadCuts->Fill(13); //quads that satisfy the requirement of having at least 2 reco to trigger muon matches
       
@@ -719,21 +727,23 @@ void run(string file){
         dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(3), TREE->dimuon2vtx_ypos->at(i).at(3), TREE->dimuon2vtx_zpos->at(i).at(3));
         
         //Protections against vectors whose vertex coordinates got filled with the value (-1000) that indicates that the vertex was found to be not valid in the phase1 code
-        if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
-          continue; 
-        }
-        
-        if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
-          continue; 
-        }
-     //    if (dimuon1vtx_vec.DeltaR(dimuon2vtx_vec) > deltaR_dimuon1vtx_dimuon2vtx_Cut){
+       //  if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
+//           continue; 
+//         }
+//         
+//         if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
+//           continue; 
+//         }
+//      //    if (dimuon1vtx_vec.DeltaR(dimuon2vtx_vec) > deltaR_dimuon1vtx_dimuon2vtx_Cut){
 //           //std::cout << "WATER BUFFALO" << std::endl;
 //           continue; 
 //         }
         
+        if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ){
+        
         double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
         double dZ = fabs(dimuon1vtx_vec.Z()-dimuon2vtx_vec.Z());
-        
+        }
     //     if (dZ > dR + offset){
 //           continue; 
 //         }
@@ -748,7 +758,7 @@ void run(string file){
           continue;
         }
         //cartesian DR significance calculations
-        
+      if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {  
         double DX = fabs(dimuon1vtx_vec.X()-dimuon2vtx_vec.X());
         double DX2 = DX * DX;
    //     std::cout << "DX2:  " << DX2 << std::endl; 
@@ -794,7 +804,7 @@ void run(string file){
        // std::cout << "cart_DR_Sig:  " << cart_DR_Sig << std::endl; 
         
         h_cart_DR_Sig->Fill(cart_DR_Sig);
-        
+        double dZ = fabs(dimuon1vtx_vec.Z()-dimuon2vtx_vec.Z());
         double DZ2 = dZ * dZ;
         double error_dimu1_Z2 = TREE->dimuon1vtx_zposError->at(i).at(3);
         //double error_dimu1_Z2 = error_dimu1_Z * error_dimu1_Z;
@@ -806,7 +816,7 @@ void run(string file){
    //     std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
         
         h_DZ_Sig->Fill(DZ_Sig);
-        
+        }
                 
         //Sort out Z1, the heavier of the two pairs, vs. Z2, the lighter of the two pairs
         
@@ -851,22 +861,24 @@ void run(string file){
         dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(4), TREE->dimuon2vtx_ypos->at(i).at(4), TREE->dimuon2vtx_zpos->at(i).at(4));
         
          //Protections against vectors whose vertex coordinates got filled with the value (-1000) that indicates that the vertex was found to be not valid in the phase1 code
-        if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
-          continue; 
-        }
-        
-        if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
-          continue; 
-        }
-        
+       //  if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
+//           continue; 
+//         }
+//         
+//         if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
+//           continue; 
+//         }
+//         
      //    if (dimuon1vtx_vec.DeltaR(dimuon2vtx_vec) > deltaR_dimuon1vtx_dimuon2vtx_Cut){
 //           //std::cout << "WATER BUFFALO 2" << std::endl;
 //           continue; 
 //         }
+
+ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ){
         
         double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
         double dZ = fabs(dimuon1vtx_vec.Z()-dimuon2vtx_vec.Z());
-        
+   }     
     //     if (dZ > dR + offset){
 //           continue; 
 //         }
@@ -880,6 +892,7 @@ void run(string file){
         }
         
                 //cartesian DR significance calculations
+     if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ){
         
         double DX = fabs(dimuon1vtx_vec.X()-dimuon2vtx_vec.X());
         double DX2 = DX * DX;
@@ -926,7 +939,7 @@ void run(string file){
        // std::cout << "cart_DR_Sig Elephant:  " << cart_DR_Sig << std::endl; 
         
         h_cart_DR_Sig->Fill(cart_DR_Sig);
-        
+        double dZ = fabs(dimuon1vtx_vec.Z()-dimuon2vtx_vec.Z());
         double DZ2 = dZ * dZ;
         double error_dimu1_Z2 = TREE->dimuon1vtx_zposError->at(i).at(4);
       //  double error_dimu1_Z2 = error_dimu1_Z * error_dimu1_Z;
@@ -938,7 +951,7 @@ void run(string file){
      //   std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
         
         h_DZ_Sig->Fill(DZ_Sig);
-        
+    }    
         //sort out Z1, the heavier of the two pairs, vs. Z2, the lighter of the two pairs
         
         if ( (lepton1 + lepton3).M() > (lepton2 + lepton4).M() ){
@@ -981,22 +994,22 @@ void run(string file){
         dimuon2vtx_vec.SetXYZ(TREE->dimuon2vtx_xpos->at(i).at(5), TREE->dimuon2vtx_ypos->at(i).at(5), TREE->dimuon2vtx_zpos->at(i).at(5));
         
          //Protections against vectors whose vertex coordinates got filled with the value (-1000) that indicates that the vertex was found to be not valid in the phase1 code
-        if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
-          continue; 
-        }
-        
-        if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
-          continue; 
-        }
+      //   if (dimuon1vtx_vec.X() == -1000 || dimuon1vtx_vec.Y() == -1000 || dimuon1vtx_vec.Z() == -1000){
+//           continue; 
+//         }
+//         
+//         if (dimuon2vtx_vec.X() == -1000 || dimuon2vtx_vec.Y() == -1000 || dimuon2vtx_vec.Z() == -1000){
+//           continue; 
+//         }
         
       //   if (dimuon1vtx_vec.DeltaR(dimuon2vtx_vec) > deltaR_dimuon1vtx_dimuon2vtx_Cut){
 //           //std::cout << "WATER BUFFALO 3" << std::endl;
 //           continue; 
 //         }
-        
+       if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ){  
         double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
         double dZ = fabs(dimuon1vtx_vec.Z()-dimuon2vtx_vec.Z());
-        
+        }
   //       if (dZ > dR + offset){
 //           continue; 
 //         }
@@ -1010,7 +1023,7 @@ void run(string file){
         }
         
                 //cartesian DR significance calculations
-        
+       if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ){  
         double DX = fabs(dimuon1vtx_vec.X()-dimuon2vtx_vec.X());
         double DX2 = DX * DX;
    //     std::cout << "DX2:  " << DX2 << std::endl; 
@@ -1056,7 +1069,7 @@ void run(string file){
      //   std::cout << "cart_DR_Sig Wombat:  " << cart_DR_Sig << std::endl; 
         
         h_cart_DR_Sig->Fill(cart_DR_Sig);
-        
+        double dZ = fabs(dimuon1vtx_vec.Z()-dimuon2vtx_vec.Z());
         double DZ2 = dZ * dZ;
         double error_dimu1_Z2 = TREE->dimuon1vtx_zposError->at(i).at(5);
    //     double error_dimu1_Z2 = error_dimu1_Z * error_dimu1_Z;
@@ -1068,7 +1081,7 @@ void run(string file){
       //  std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
         
         h_DZ_Sig->Fill(DZ_Sig);
-        
+    }
         
         //sort out Z1, the heavier of the two pairs, vs. Z2, the lighter of the two pairs
         
@@ -1121,62 +1134,63 @@ void run(string file){
       temp_lep4_eta.push_back(lepton4.Eta());
       temp_lep4_phi.push_back(lepton4.Phi());
       
+      temp_big4MuVtxProb.push_back(TREE->big4MuVtx->at(i));
       
 
     } //close loop over leptons
-    if (temp_Z_mass.size() == 1){
+    
+   
+double vertex_comparator = -100000; 
+double my_counter=0;
+
+for (int jj=0; jj<(int)temp_big4MuVtxProb.size(); jj++){
+  my_counter++;
+  if (my_counter == 1){
       fillCount++;
-      
-      Z_mass = temp_Z_mass.at(0);
-      Z_eta  = temp_Z_eta.at(0);
-      Z_phi  = temp_Z_phi.at(0);
-      Z_pT   = temp_Z_pT.at(0);
-      
-      
-      
-      //temp_Z_mass.size() == 1 implies that the temp_Z1, temp_Z2 quantities also are of size 1. This is true because 
-      //there are no continue statements between where the temp_Z1, temp_Z2 quantities are filled and the place
-      //where the temp_Z_mass quantity is filled, so whatever is filled at the temp_Z1, temp_Z2 level will
-      //fall through to be filled at the temp_Z_mass level.
-      //If we had an event that contained an is_pair_XY_PQ and an is_pair_XprimeYprime_PprimeQprime, the temp_Z_mass
-      //size could be greater than the individual temp_Z1, temp_Z2 sizes,
-      //in this case the temp_Z_mass size would be the sum of the temp_Z1 (temp_Z2) size from is_pair_XY_PQ and
-      //from is_pair_XprimeYprime_PprimeQprime
-        
-      Z1_mass = temp_Z1_mass.at(0);
-      Z2_mass = temp_Z2_mass.at(0);
-      
-      Z1_pT   = temp_Z1_pT.at(0);
-      Z2_pT   = temp_Z2_pT.at(0);
-      
-      Z1_eta  = temp_Z1_eta.at(0);
-      Z2_eta  = temp_Z2_eta.at(0);
-      
-      Z1_phi  = temp_Z1_phi.at(0);
-      Z2_phi  = temp_Z2_phi.at(0);
-      
-      lepton1_pT = temp_lep1_pT.at(0);
-      lepton1_eta = temp_lep1_eta.at(0);
-      lepton1_phi = temp_lep1_phi.at(0);
-      
-      lepton2_pT = temp_lep2_pT.at(0);
-      lepton2_eta = temp_lep2_eta.at(0);
-      lepton2_phi = temp_lep2_phi.at(0);
-      
-      lepton3_pT = temp_lep3_pT.at(0);
-      lepton3_eta = temp_lep3_eta.at(0);
-      lepton3_phi = temp_lep3_phi.at(0);
-      
-      lepton4_pT = temp_lep4_pT.at(0);
-      lepton4_eta = temp_lep4_eta.at(0);
-      lepton4_phi = temp_lep4_phi.at(0);
-      
-      
-      
-      
-      
-      aux->Fill();
     }
+    
+  if (vertex_comparator<temp_big4MuVtxProb.at(jj)){
+      Z_mass = temp_Z_mass.at(jj);
+      Z_eta  = temp_Z_eta.at(jj);
+      Z_phi  = temp_Z_phi.at(jj);
+      Z_pT   = temp_Z_pT.at(jj);
+      
+        
+      Z1_mass = temp_Z1_mass.at(jj);
+      Z2_mass = temp_Z2_mass.at(jj);
+      
+      Z1_pT   = temp_Z1_pT.at(jj);
+      Z2_pT   = temp_Z2_pT.at(jj);
+      
+      Z1_eta  = temp_Z1_eta.at(jj);
+      Z2_eta  = temp_Z2_eta.at(jj);
+      
+      Z1_phi  = temp_Z1_phi.at(jj);
+      Z2_phi  = temp_Z2_phi.at(jj);
+      
+      lepton1_pT = temp_lep1_pT.at(jj);
+      lepton1_eta = temp_lep1_eta.at(jj);
+      lepton1_phi = temp_lep1_phi.at(jj);
+      
+      lepton2_pT = temp_lep2_pT.at(jj);
+      lepton2_eta = temp_lep2_eta.at(jj);
+      lepton2_phi = temp_lep2_phi.at(jj);
+      
+      lepton3_pT = temp_lep3_pT.at(jj);
+      lepton3_eta = temp_lep3_eta.at(jj);
+      lepton3_phi = temp_lep3_phi.at(jj);
+      
+      lepton4_pT = temp_lep4_pT.at(jj);
+      lepton4_eta = temp_lep4_eta.at(jj);
+      lepton4_phi = temp_lep4_phi.at(jj);
+      
+      vertex_comparator = temp_big4MuVtxProb.at(jj);
+      }
+      
+  if (my_counter == (double)temp_big4MuVtxProb.size()){
+        aux->Fill();
+      }
+   } 
   }//close loop over entries
   
   std::cout << "is_pair_12_34_ZOnly_Count:  " << is_pair_12_34_ZOnly_Count << std::endl;
