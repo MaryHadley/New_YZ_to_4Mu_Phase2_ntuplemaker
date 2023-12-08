@@ -152,8 +152,8 @@ void run(string file){//, string file2){
   
 //  bool useGlobalMuons = true;
     bool useGlobalMuons = false;
- //   bool applySPSWeights = false;
-    bool applySPSWeights = true;
+    bool applySPSWeights = false;
+//    bool applySPSWeights = true;
     
   if (!doMCTruthMatching){
      std::cout << "NOT performing MC truth matching" << std::endl;
@@ -364,7 +364,7 @@ void run(string file){//, string file2){
   double SPS_Subprocess_XSec = -99;
   double weightToApply = -99; 
   
-  TFile *ntuple = new TFile("14September2023_ntuple_v3_pfIso0p35forZmu_0p7forUpsiMu_upsiMuPtCut3_useGlobalMuonsFalse_doMCTruthMatchingTrue_inputFileIs_myNewFile_from_flatFile_MC_SPS_Y1SZ.root", "RECREATE");
+  TFile *ntuple = new TFile("trigEff_Num_2018.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
