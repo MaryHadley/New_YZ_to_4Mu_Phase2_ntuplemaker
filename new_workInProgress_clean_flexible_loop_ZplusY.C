@@ -145,8 +145,8 @@ void run(string file){//, string file2){
   
   //boolean flags
   
-  bool doMCTruthMatching = true;
-//  bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
+//  bool doMCTruthMatching = true;
+  bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
   bool applyIsoToUpsiMu = true;
 //  bool doRecoToTrigMuMatching = false;
   
@@ -206,6 +206,9 @@ void run(string file){//, string file2){
     std::cout << "APPLYING SPS weights! Make sure you are running on SPS MC!" << std::endl;
     std::cout << "//////////////////////////////////////////////////////////" << std::endl;
   }
+  
+  //bool that is not a flag, we want to initialize it to false
+  bool real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = false;
   
   //counters
   int pair_12_34_56_count = 0;
@@ -364,7 +367,10 @@ void run(string file){//, string file2){
   double SPS_Subprocess_XSec = -99;
   double weightToApply = -99; 
   
-  TFile *ntuple = new TFile("trigEff_Num_2018.root", "RECREATE");
+  //Variable for study suggested by Achim
+  double dZ_dimuonvtx1_dimuonvtx2 = -99;
+  
+  TFile *ntuple = new TFile("all_cuts_in_study_for_Achim_2018.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -421,6 +427,8 @@ void run(string file){//, string file2){
   aux->Branch("SPS_LHE_Weight", &SPS_LHE_Weight);
   aux->Branch("SPS_Subprocess_XSec", &SPS_Subprocess_XSec);
   aux->Branch("weightToApply", &weightToApply);
+  
+  aux->Branch("dZ_dimuonvtx1_dimuonvtx2", &dZ_dimuonvtx1_dimuonvtx2);
 
 ///////////////////////////
 //////    D A T A    //////
@@ -496,6 +504,8 @@ void run(string file){//, string file2){
     std::vector<double> temp_SPS_Subprocess_XSec;
     std::vector<double> temp_weightToApply;
     
+    std::vector<double> temp_dZ_dimuonvtx1_dimuonvtx2;
+    
     temp_Z_mass.clear();
     
     
@@ -547,6 +557,8 @@ void run(string file){//, string file2){
     temp_SPS_LHE_Weight.clear();
     temp_SPS_Subprocess_XSec.clear();
     temp_weightToApply.clear();
+    
+    temp_dZ_dimuonvtx1_dimuonvtx2.clear();
     
     mass1_quickAndDirty = 0.; mass2_quickAndDirty = 0.;
     
@@ -1242,6 +1254,7 @@ void run(string file){//, string file2){
 //        }
            
        if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {  
+           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
           //  if (dZ > dR + offset){
@@ -1319,7 +1332,7 @@ void run(string file){//, string file2){
    //     std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
          h_DZ_Sig->Fill(DZ_Sig);
    }        
-           
+   //    std::cout << "real_dist_btwn_dimuonvtx1_and_dimuonvtx2:  " << real_dist_btwn_dimuonvtx1_and_dimuonvtx2 << std::endl;  
            //If we get here, we have a survivor 
            
  //          survivor_Z_first_upsi_phase1_second_pair_12_34_56 = true;
@@ -1389,6 +1402,17 @@ void run(string file){//, string file2){
            temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
            temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
            temp_weightToApply.push_back(weightToApply);
+           
+           if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+             double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+             temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+           }
+           else{
+             double dZ = -1;
+             temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+           } 
+           
+           
            }
             GotHereCount_Z_first_upsi_phase1_second_pair_12_34_56 += 1;
            //then I would have to write a new if doMCTruthMatching block, do the truth matching // flagPoodle
@@ -1578,6 +1602,15 @@ void run(string file){//, string file2){
                  temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                  temp_weightToApply.push_back(weightToApply);
                  
+                 if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+                   double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+                   temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                }
+                else{
+                  double dZ = -1;
+                  temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                } 
+                 
                  
                  }
                  
@@ -1700,6 +1733,7 @@ void run(string file){//, string file2){
           // double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
           
         if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
+           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
             h_dz_vs_4MuVtxProb->Fill(dZ, TREE->big4MuVtx->at(i));
@@ -1825,6 +1859,14 @@ void run(string file){//, string file2){
               temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
               temp_weightToApply.push_back(weightToApply);
               
+              if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+               double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+               temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+              }
+              else{
+                double dZ = -1;
+               temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+              } 
              }
            
            //flag Begin MC Truth Matching section here
@@ -1997,6 +2039,15 @@ void run(string file){//, string file2){
                    temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
                    temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                    temp_weightToApply.push_back(weightToApply);
+                   
+                   if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+                     double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+                     temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                    }
+                   else{
+                    double dZ = -1;
+                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                   } 
                   
                   }
                // }
@@ -2141,6 +2192,7 @@ void run(string file){//, string file2){
            
        //    double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
 if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
+           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
           //  if (dZ > dR + offset){
@@ -2259,6 +2311,15 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
                temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                temp_weightToApply.push_back(weightToApply);
+               
+               if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+                double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+                temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                }
+               else{
+                double dZ = -1;
+                temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+               } 
                
               }
             
@@ -2435,6 +2496,16 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                     temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
                     temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                     temp_weightToApply.push_back(weightToApply);
+                    
+                    if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+                      double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+                      temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                    }
+                    else{
+                      double dZ = -1;
+                      temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                    } 
+                    
                   }
                // }
              // }
@@ -2544,6 +2615,7 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
            
       //     double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
   if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
+           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
            
@@ -2668,6 +2740,14 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                 temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                 temp_weightToApply.push_back(weightToApply);
                 
+                if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+                  double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+                  temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                }
+                else{
+                  double dZ = -1;
+                  temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                } 
                 
               }
             
@@ -2843,6 +2923,14 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                   temp_weightToApply.push_back(weightToApply);
                   
+                  if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+                    double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                  }
+                  else{
+                    double dZ = -1;
+                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                   } 
                   
                   }
                // }
@@ -2978,6 +3066,7 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
            
         //   double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
     if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
+           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
            
@@ -3100,7 +3189,15 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                  temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
                  temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                  temp_weightToApply.push_back(weightToApply);
-            
+                 
+                if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+                  double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+                  temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                }
+                else{
+                  double dZ = -1;
+                  temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                } 
             
             }
               
@@ -3276,6 +3373,15 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                    temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                    temp_weightToApply.push_back(weightToApply);
                    
+                   if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+                     double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+                     temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                   }
+                   else{
+                    double dZ = -1;
+                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                   } 
+                   
                   }
                   
                   
@@ -3391,6 +3497,7 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
            
      //      double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
    if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
+           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
         //    if (dZ > dR + offset){
@@ -3510,7 +3617,15 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
                   temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                   temp_weightToApply.push_back(weightToApply);
-                
+                 
+                  if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+                    double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                  }
+                  else{
+                    double dZ = -1;
+                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                  } 
                 
                 }
              
@@ -3682,6 +3797,14 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                   temp_weightToApply.push_back(weightToApply);
                   
+                  if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
+                    double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
+                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                 }
+                 else{
+                   double dZ = -1;
+                   temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
+                 } 
                   
                   }
                   
@@ -3811,6 +3934,7 @@ for (int jj=0; jj<(int)temp_big4MuVtxProb.size(); jj++)   {
      SPS_LHE_Weight = temp_SPS_LHE_Weight.at(jj);
      SPS_Subprocess_XSec = temp_SPS_Subprocess_XSec.at(jj);
      weightToApply = temp_weightToApply.at(jj);
+     dZ_dimuonvtx1_dimuonvtx2 = temp_dZ_dimuonvtx1_dimuonvtx2.at(jj);
      
      
      if (doMCTruthMatching){
@@ -3820,6 +3944,8 @@ for (int jj=0; jj<(int)temp_big4MuVtxProb.size(); jj++)   {
      if (!doMCTruthMatching){
         upsi_type = -1;
       }
+      
+    
      
       vertex_comparator = temp_big4MuVtxProb.at(jj); //this line is key!
       
