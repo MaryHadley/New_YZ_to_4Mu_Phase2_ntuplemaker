@@ -145,8 +145,8 @@ void run(string file){//, string file2){
   
   //boolean flags
   
-//  bool doMCTruthMatching = true;
-  bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
+  bool doMCTruthMatching = true;
+//  bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
   bool applyIsoToUpsiMu = true;
 //  bool doRecoToTrigMuMatching = false;
   
@@ -370,7 +370,7 @@ void run(string file){//, string file2){
   //Variable for study suggested by Achim
   double dZ_dimuonvtx1_dimuonvtx2 = -99;
   
-  TFile *ntuple = new TFile("all_cuts_in_study_for_Achim_2016.root", "RECREATE");
+  TFile *ntuple = new TFile("ntuple_2016MC_correctTrigsEnabled.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -568,20 +568,20 @@ void run(string file){//, string file2){
     bool event_fails_trigger = true; //defaults to true
     
     //bools for 2016 triggers
-   bool singleMu2016Trig1Fired = false;
-   bool singleMu2016Trig2Fired = false;
+//   bool singleMu2016Trig1Fired = false;
+//   bool singleMu2016Trig2Fired = false;
    bool doubleMu2016Trig1Fired = false;
    bool doubleMu2016Trig2Fired = false;
    bool tripleMu2016Trig1Fired = false;
    
    //bools for 2017 triggers
-   bool singleMu2017Trig1Fired = false;
+//   bool singleMu2017Trig1Fired = false;
    bool doubleMu2017Trig1Fired = false; 
    bool tripleMu2017Trig1Fired = false;
    bool tripleMu2017Trig2Fired = false; 
    
     //bools for 2018 triggers
-   bool singleMu2018Trig1Fired = false;
+//   bool singleMu2018Trig1Fired = false;
    bool doubleMu2018Trig1Fired = false; 
    bool doubleMu2018Trig2Fired = false; 
    bool tripleMu2018Trig1Fired = false;
@@ -596,25 +596,25 @@ void run(string file){//, string file2){
      if (triggerYear == 2016){
        std::string str2 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"); //call this DoubleMu2016Trig1
        std::string str3 ("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"); //call this DoubleMu2016Trig2
-       std::string str4 ("HLT_IsoMu24_v"); //call this SingleMu2016Trig1
-       std::string str5 ("HLT_IsoTkMu24_v"); //call this SingleMu2016Trig2
+       //std::string str4 ("HLT_IsoMu24_v"); //call this SingleMu2016Trig1
+      // std::string str5 ("HLT_IsoTkMu24_v"); //call this SingleMu2016Trig2
        std::string str5a ("HLT_TripleMu_12_10_5_v"); //call this TripleMu2016Trig1
          
        std::size_t foundDoubleMu2016Trig1 = str.find(str2);
        std::size_t foundDoubleMu2016Trig2 = str.find(str3);
-       std::size_t foundSingleMu2016Trig1 = str.find(str4);
-       std::size_t foundSingleMu2016Trig2 = str.find(str5);
+      // std::size_t foundSingleMu2016Trig1 = str.find(str4);
+     //  std::size_t foundSingleMu2016Trig2 = str.find(str5);
        std::size_t foundTripleMu2016Trig1 = str.find(str5a);
        
-      if (foundSingleMu2016Trig1 != std::string::npos){
-        singleMu2016Trig1Fired = true;
-         //std::cout << "singleMu2016Trig1Fired:  "  << singleMu2016Trig1Fired << std::endl; 
-       }
+      // if (foundSingleMu2016Trig1 != std::string::npos){
+//         singleMu2016Trig1Fired = true;
+//          //std::cout << "singleMu2016Trig1Fired:  "  << singleMu2016Trig1Fired << std::endl; 
+//        }
       
-      if (foundSingleMu2016Trig2 != std::string::npos){
-        singleMu2016Trig2Fired = true;
-        //std::cout << "singleMu2016Trig2Fired:  " << singleMu2016Trig2Fired << std::endl; 
-      }
+    //   if (foundSingleMu2016Trig2 != std::string::npos){
+//         singleMu2016Trig2Fired = true;
+//         //std::cout << "singleMu2016Trig2Fired:  " << singleMu2016Trig2Fired << std::endl; 
+//       }
       
       if (foundDoubleMu2016Trig1 != std::string::npos){
         doubleMu2016Trig1Fired = true;
@@ -632,7 +632,7 @@ void run(string file){//, string file2){
       }
       
       
-      if (singleMu2016Trig1Fired || singleMu2016Trig2Fired || doubleMu2016Trig1Fired || doubleMu2016Trig2Fired || tripleMu2016Trig1Fired){
+      if (doubleMu2016Trig1Fired || doubleMu2016Trig2Fired || tripleMu2016Trig1Fired){
         event_fails_trigger = false;
     //    std::cout << "Event passed 2016 triggers" << std::endl;
         break; 
@@ -642,19 +642,19 @@ void run(string file){//, string file2){
      
      if (triggerYear == 2017){
        std::string str6 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"); //call this DoubleMu2017Trig1
-       std::string str7 ("HLT_IsoMu27_v"); //call this SingleMu2017Trig1
+    //   std::string str7 ("HLT_IsoMu27_v"); //call this SingleMu2017Trig1
        std::string str7a ("HLT_TripleMu_12_10_5_v"); //call this TripleMu2017Trig1
        std::string str7b ("HLT_TripleMu_10_5_5_DZ_v"); //call this TripleMu2017Trig2 
          
        std::size_t foundDoubleMu2017Trig1 = str.find(str6);
-       std::size_t foundSingleMu2017Trig1 = str.find(str7);
+     //  std::size_t foundSingleMu2017Trig1 = str.find(str7);
        std::size_t foundTripleMu2017Trig1 = str.find(str7a);
        std::size_t foundTripleMu2017Trig2 = str.find(str7b);
        
-       if (foundSingleMu2017Trig1 != std::string::npos){
-         singleMu2017Trig1Fired = true;
-         //  std::cout << "singleMu2017Trig1Fired:  " << singleMu2017Trig1Fired << std::endl; 
-       } 
+      //  if (foundSingleMu2017Trig1 != std::string::npos){
+//          singleMu2017Trig1Fired = true;
+//          //  std::cout << "singleMu2017Trig1Fired:  " << singleMu2017Trig1Fired << std::endl; 
+//        } 
        
        if (foundDoubleMu2017Trig1 != std::string::npos){
          doubleMu2017Trig1Fired = true;
@@ -671,7 +671,7 @@ void run(string file){//, string file2){
          //  std::cout << "tripleMu2017Trig2Fired:  " << tripleMu2017Trig2Fired << std::endl;
        }
        
-       if (singleMu2017Trig1Fired || doubleMu2017Trig1Fired || tripleMu2017Trig1Fired || tripleMu2017Trig2Fired){
+       if (doubleMu2017Trig1Fired || tripleMu2017Trig1Fired || tripleMu2017Trig2Fired){
          event_fails_trigger = false;
       //   std::cout << "Event passed 2017 triggers" << std::endl; 
          break;
@@ -682,21 +682,21 @@ void run(string file){//, string file2){
      if (triggerYear == 2018){
        std::string str8 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v"); //call this DoubleMu2018Trig1
        std::string str8a ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"); // call this DoubleMu2018Trig2
-       std::string str9 ("HLT_IsoMu24_v"); // call this SingleMu2018Trig1
+     //  std::string str9 ("HLT_IsoMu24_v"); // call this SingleMu2018Trig1
        std::string str9a ("HLT_TripleMu_12_10_5_v"); // call this TripleMu2018Trig1
        std::string str9b ("HLT_TripleMu_10_5_5_DZ_v"); // call this TripleMu2018Trig2
        
        std::size_t foundDoubleMu2018Trig1 = str.find(str8);
        std::size_t foundDoubleMu2018Trig2 = str.find(str8a);
-       std::size_t foundSingleMu2018Trig1 = str.find(str9);
+      // std::size_t foundSingleMu2018Trig1 = str.find(str9);
        std::size_t foundTripleMu2018Trig1 = str.find(str9a);
        std::size_t foundTripleMu2018Trig2 = str.find(str9b);
        
-       if (foundSingleMu2018Trig1 != std::string::npos){
-           singleMu2018Trig1Fired = true;
-          // std::cout << "singleMu2018Trig1Fired:  " << singleMu2018Trig1Fired << std::endl; 
-       }
-       
+       // if (foundSingleMu2018Trig1 != std::string::npos){
+//            singleMu2018Trig1Fired = true;
+//           // std::cout << "singleMu2018Trig1Fired:  " << singleMu2018Trig1Fired << std::endl; 
+//        }
+//        
        if (foundDoubleMu2018Trig1 != std::string::npos){
            doubleMu2018Trig1Fired = true;
        //    std::cout << "doubleMu2018Trig1Fired:  " << doubleMu2018Trig1Fired << std::endl; 
@@ -717,7 +717,7 @@ void run(string file){//, string file2){
          //  std::cout << "tripleMu2018Trig2Fired:  " << tripleMu2018Trig2Fired << std::endl; 
         }
        
-       if (singleMu2018Trig1Fired || doubleMu2018Trig1Fired || doubleMu2018Trig2Fired || tripleMu2018Trig1Fired || tripleMu2018Trig2Fired){
+       if (doubleMu2018Trig1Fired || doubleMu2018Trig2Fired || tripleMu2018Trig1Fired || tripleMu2018Trig2Fired){
          event_fails_trigger = false;
    //      std::cout << "Event passed 2018 triggers" << std::endl;
          break;

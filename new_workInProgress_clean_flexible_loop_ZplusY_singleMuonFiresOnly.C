@@ -131,9 +131,9 @@ void run(string file){//, string file2){
   double Z_mass_true = 91.1876; //from PDG, 4 October 2022
   
   //non-boolean flags
-   int triggerYear = 2016; //options are 2016, 2017, 2018
-// int triggerYear = 2017;
-//  int triggerYear = 2018;
+//   int triggerYear = 2016; //options are 2016, 2017, 2018
+//  int triggerYear = 2017;
+  int triggerYear = 2018;
   
   std::cout << "Using triggers for year:  " << triggerYear << std::endl;
   std::cout << "//////////////////////" << std::endl;
@@ -260,7 +260,9 @@ void run(string file){//, string file2){
   
   int matchedCount = 0; //matchedCount indicates that we have matched all 4 muons appropriately, 2 to the Z, 2 to an UpsiN, and we have determined what that N is
   
-  
+  int firesSingleMuOnly2016 = 0;
+  int firesSingleMuOnly2017 = 0;
+  int firesSingleMuOnly2018 = 0;
   
   
   //Cuts 
@@ -452,7 +454,7 @@ void run(string file){//, string file2){
 //         break;
 //       }
    //  std::cout << enteredLepLoopCount << std::endl; 
-     
+//     int firesSingleMuOnly2016 = 0;
     
     double temp_comparison_pt_upsilon = 0;
     double temp_comparison_pt_z = 0;
@@ -574,13 +576,13 @@ void run(string file){//, string file2){
    bool doubleMu2016Trig2Fired = false;
    bool tripleMu2016Trig1Fired = false;
    
-   //bools for 2017 triggers
+ //  bools for 2017 triggers
    bool singleMu2017Trig1Fired = false;
    bool doubleMu2017Trig1Fired = false; 
    bool tripleMu2017Trig1Fired = false;
    bool tripleMu2017Trig2Fired = false; 
    
-    //bools for 2018 triggers
+  //  bools for 2018 triggers
    bool singleMu2018Trig1Fired = false;
    bool doubleMu2018Trig1Fired = false; 
    bool doubleMu2018Trig2Fired = false; 
@@ -588,12 +590,18 @@ void run(string file){//, string file2){
    bool tripleMu2018Trig2Fired = false; 
     
     //event level loop on the contents of the triggerlist
+  
+ 
+  
+  //For 2016
+  
+  if (triggerYear == 2016){
    for (int iTrig =0; iTrig < (int)TREE->triggerlist->size(); iTrig++){
      //std::cout << TREE->triggerlist->at(iTrig) << std::endl;
      std::string str (TREE->triggerlist->at(iTrig));
      //std::cout << "str:  " << str << std::endl; 
      
-     if (triggerYear == 2016){
+     
        std::string str2 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"); //call this DoubleMu2016Trig1
        std::string str3 ("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"); //call this DoubleMu2016Trig2
        std::string str4 ("HLT_IsoMu24_v"); //call this SingleMu2016Trig1
@@ -630,17 +638,24 @@ void run(string file){//, string file2){
         tripleMu2016Trig1Fired = true;
         //   std::cout << "tripleMu2016Trig1Fired:  " << tripleMu2016Trig1Fired << std::endl; 
       }
-      
-      
-      if (singleMu2016Trig1Fired || singleMu2016Trig2Fired || doubleMu2016Trig1Fired || doubleMu2016Trig2Fired || tripleMu2016Trig1Fired){
-        event_fails_trigger = false;
-    //    std::cout << "Event passed 2016 triggers" << std::endl;
-        break; 
-      }
     
-     }
+    } 
+   
+   if (!(doubleMu2016Trig1Fired || doubleMu2016Trig2Fired || tripleMu2016Trig1Fired) && (singleMu2016Trig1Fired || singleMu2016Trig2Fired)){
+        event_fails_trigger = false;
+        firesSingleMuOnly2016++;
+    //    std::cout << "Event passed 2016 triggers" << std::endl;
+     //   break; 
+      }
+  }  
      
-     if (triggerYear == 2017){
+//For 2017 
+  if (triggerYear == 2017){
+     
+     for (int iTrig =0; iTrig < (int)TREE->triggerlist->size(); iTrig++){
+     //std::cout << TREE->triggerlist->at(iTrig) << std::endl;
+     std::string str (TREE->triggerlist->at(iTrig));
+     //std::cout << "str:  " << str << std::endl; 
        std::string str6 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"); //call this DoubleMu2017Trig1
        std::string str7 ("HLT_IsoMu27_v"); //call this SingleMu2017Trig1
        std::string str7a ("HLT_TripleMu_12_10_5_v"); //call this TripleMu2017Trig1
@@ -671,15 +686,22 @@ void run(string file){//, string file2){
          //  std::cout << "tripleMu2017Trig2Fired:  " << tripleMu2017Trig2Fired << std::endl;
        }
        
-       if (singleMu2017Trig1Fired || doubleMu2017Trig1Fired || tripleMu2017Trig1Fired || tripleMu2017Trig2Fired){
+    }
+       
+     if (!(doubleMu2017Trig1Fired || tripleMu2017Trig1Fired || tripleMu2017Trig2Fired) && singleMu2017Trig1Fired){
          event_fails_trigger = false;
+         firesSingleMuOnly2017++;
       //   std::cout << "Event passed 2017 triggers" << std::endl; 
-         break;
+        // break;
        }  
+    } 
      
-     }
-     
-     if (triggerYear == 2018){
+ //For 2018    
+   if (triggerYear == 2018){ 
+      for (int iTrig =0; iTrig < (int)TREE->triggerlist->size(); iTrig++){
+     //std::cout << TREE->triggerlist->at(iTrig) << std::endl;
+     std::string str (TREE->triggerlist->at(iTrig));
+     //std::cout << "str:  " << str << std::endl; 
        std::string str8 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v"); //call this DoubleMu2018Trig1
        std::string str8a ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"); // call this DoubleMu2018Trig2
        std::string str9 ("HLT_IsoMu24_v"); // call this SingleMu2018Trig1
@@ -692,7 +714,7 @@ void run(string file){//, string file2){
        std::size_t foundTripleMu2018Trig1 = str.find(str9a);
        std::size_t foundTripleMu2018Trig2 = str.find(str9b);
        
-       if (foundSingleMu2018Trig1 != std::string::npos){
+      if (foundSingleMu2018Trig1 != std::string::npos){
            singleMu2018Trig1Fired = true;
           // std::cout << "singleMu2018Trig1Fired:  " << singleMu2018Trig1Fired << std::endl; 
        }
@@ -716,15 +738,15 @@ void run(string file){//, string file2){
            tripleMu2018Trig2Fired = true;
          //  std::cout << "tripleMu2018Trig2Fired:  " << tripleMu2018Trig2Fired << std::endl; 
         }
-       
-       if (singleMu2018Trig1Fired || doubleMu2018Trig1Fired || doubleMu2018Trig2Fired || tripleMu2018Trig1Fired || tripleMu2018Trig2Fired){
+     }
+      if (!(doubleMu2018Trig1Fired || doubleMu2018Trig2Fired || tripleMu2018Trig1Fired || tripleMu2018Trig2Fired) && singleMu2018Trig1Fired){
          event_fails_trigger = false;
+         firesSingleMuOnly2018++;
    //      std::cout << "Event passed 2018 triggers" << std::endl;
-         break;
+        // break;
        
        }
      }
-   } 
    
    if (event_fails_trigger){
      continue;
@@ -3953,6 +3975,8 @@ for (int jj=0; jj<(int)temp_big4MuVtxProb.size(); jj++)   {
       }
   if (my_counter == (double)temp_big4MuVtxProb.size()){
   aux->Fill();
+  std::cout << "Z_mass: " << Z_mass << std::endl;
+  std::cout << "upsi_mass: " << upsi_mass << std::endl;
   }
 }
   //    fillCount += 1;
@@ -3988,6 +4012,11 @@ std::cout << "eventCounter:  " << eventCounter << std::endl;
 std::cout << "mcSanityCheckCount: " << mcSanityCheckCount << std::endl; //this should be GotHereCount_Z_first_upsi_phase1_second_pair_12_34_56 times number of events in the treemc //sanity check passed
 std::cout << "matchedZCount: " << matchedZCount << std::endl; 
 std::cout << "matchedCount: " << matchedCount << std::endl; 
+
+std::cout << "firesSingleMuOnly2016:  " << firesSingleMuOnly2016 << std::endl;
+std::cout << "firesSingleMuOnly2017:  " << firesSingleMuOnly2017 << std::endl;
+std::cout << "firesSingleMuOnly2018:  " << firesSingleMuOnly2018 << std::endl;
+
 ///////////////////////
 //////    M C    //////
 ///////////////////////

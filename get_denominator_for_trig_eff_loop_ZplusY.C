@@ -131,12 +131,12 @@ void run(string file){//, string file2){
   double Z_mass_true = 91.1876; //from PDG, 4 October 2022
   
   //non-boolean flags
-   int triggerYear = 2016; //options are 2016, 2017, 2018
+ //  int triggerYear = 2016; //options are 2016, 2017, 2018
 // int triggerYear = 2017;
 //  int triggerYear = 2018;
   
-  std::cout << "Using triggers for year:  " << triggerYear << std::endl;
-  std::cout << "//////////////////////" << std::endl;
+//  std::cout << "Using triggers for year:  " << triggerYear << std::endl;
+//  std::cout << "//////////////////////" << std::endl;
 //  std::cout << "myAdd(3,5) "<< myAdd(3,5) << std::endl;
 
 //  std::cout << "unsignedDeltaPhi(-8. *TMath::Pi(), 2. * TMath::Pi()):  " << unsignedDeltaPhi(-8. *TMath::Pi(), 2. * TMath::Pi() ) << std::endl;
@@ -145,8 +145,8 @@ void run(string file){//, string file2){
   
   //boolean flags
   
-//  bool doMCTruthMatching = true;
-  bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
+  bool doMCTruthMatching = true;
+//  bool doMCTruthMatching = false; //code working for !doMCTruthMatching and doMCTruthMatching :)
   bool applyIsoToUpsiMu = true;
 //  bool doRecoToTrigMuMatching = false;
   
@@ -206,9 +206,6 @@ void run(string file){//, string file2){
     std::cout << "APPLYING SPS weights! Make sure you are running on SPS MC!" << std::endl;
     std::cout << "//////////////////////////////////////////////////////////" << std::endl;
   }
-  
-  //bool that is not a flag, we want to initialize it to false
-  bool real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = false;
   
   //counters
   int pair_12_34_56_count = 0;
@@ -367,10 +364,7 @@ void run(string file){//, string file2){
   double SPS_Subprocess_XSec = -99;
   double weightToApply = -99; 
   
-  //Variable for study suggested by Achim
-  double dZ_dimuonvtx1_dimuonvtx2 = -99;
-  
-  TFile *ntuple = new TFile("all_cuts_in_study_for_Achim_2016.root", "RECREATE");
+  TFile *ntuple = new TFile("trigEff_Den_2018.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -427,8 +421,6 @@ void run(string file){//, string file2){
   aux->Branch("SPS_LHE_Weight", &SPS_LHE_Weight);
   aux->Branch("SPS_Subprocess_XSec", &SPS_Subprocess_XSec);
   aux->Branch("weightToApply", &weightToApply);
-  
-  aux->Branch("dZ_dimuonvtx1_dimuonvtx2", &dZ_dimuonvtx1_dimuonvtx2);
 
 ///////////////////////////
 //////    D A T A    //////
@@ -504,8 +496,6 @@ void run(string file){//, string file2){
     std::vector<double> temp_SPS_Subprocess_XSec;
     std::vector<double> temp_weightToApply;
     
-    std::vector<double> temp_dZ_dimuonvtx1_dimuonvtx2;
-    
     temp_Z_mass.clear();
     
     
@@ -558,177 +548,175 @@ void run(string file){//, string file2){
     temp_SPS_Subprocess_XSec.clear();
     temp_weightToApply.clear();
     
-    temp_dZ_dimuonvtx1_dimuonvtx2.clear();
-    
     mass1_quickAndDirty = 0.; mass2_quickAndDirty = 0.;
     
     
     //Handle the trigger
     
-    bool event_fails_trigger = true; //defaults to true
-    
-    //bools for 2016 triggers
-   bool singleMu2016Trig1Fired = false;
-   bool singleMu2016Trig2Fired = false;
-   bool doubleMu2016Trig1Fired = false;
-   bool doubleMu2016Trig2Fired = false;
-   bool tripleMu2016Trig1Fired = false;
-   
-   //bools for 2017 triggers
-   bool singleMu2017Trig1Fired = false;
-   bool doubleMu2017Trig1Fired = false; 
-   bool tripleMu2017Trig1Fired = false;
-   bool tripleMu2017Trig2Fired = false; 
-   
-    //bools for 2018 triggers
-   bool singleMu2018Trig1Fired = false;
-   bool doubleMu2018Trig1Fired = false; 
-   bool doubleMu2018Trig2Fired = false; 
-   bool tripleMu2018Trig1Fired = false;
-   bool tripleMu2018Trig2Fired = false; 
+ //    bool event_fails_trigger = true; //defaults to true
+//     
+//     //bools for 2016 triggers
+//    bool singleMu2016Trig1Fired = false;
+//    bool singleMu2016Trig2Fired = false;
+//    bool doubleMu2016Trig1Fired = false;
+//    bool doubleMu2016Trig2Fired = false;
+//    bool tripleMu2016Trig1Fired = false;
+//    
+//    //bools for 2017 triggers
+//    bool singleMu2017Trig1Fired = false;
+//    bool doubleMu2017Trig1Fired = false; 
+//    bool tripleMu2017Trig1Fired = false;
+//    bool tripleMu2017Trig2Fired = false; 
+//    
+//     //bools for 2018 triggers
+//    bool singleMu2018Trig1Fired = false;
+//    bool doubleMu2018Trig1Fired = false; 
+//    bool doubleMu2018Trig2Fired = false; 
+//    bool tripleMu2018Trig1Fired = false;
+//    bool tripleMu2018Trig2Fired = false; 
     
     //event level loop on the contents of the triggerlist
-   for (int iTrig =0; iTrig < (int)TREE->triggerlist->size(); iTrig++){
-     //std::cout << TREE->triggerlist->at(iTrig) << std::endl;
-     std::string str (TREE->triggerlist->at(iTrig));
-     //std::cout << "str:  " << str << std::endl; 
-     
-     if (triggerYear == 2016){
-       std::string str2 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"); //call this DoubleMu2016Trig1
-       std::string str3 ("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"); //call this DoubleMu2016Trig2
-       std::string str4 ("HLT_IsoMu24_v"); //call this SingleMu2016Trig1
-       std::string str5 ("HLT_IsoTkMu24_v"); //call this SingleMu2016Trig2
-       std::string str5a ("HLT_TripleMu_12_10_5_v"); //call this TripleMu2016Trig1
-         
-       std::size_t foundDoubleMu2016Trig1 = str.find(str2);
-       std::size_t foundDoubleMu2016Trig2 = str.find(str3);
-       std::size_t foundSingleMu2016Trig1 = str.find(str4);
-       std::size_t foundSingleMu2016Trig2 = str.find(str5);
-       std::size_t foundTripleMu2016Trig1 = str.find(str5a);
-       
-      if (foundSingleMu2016Trig1 != std::string::npos){
-        singleMu2016Trig1Fired = true;
-         //std::cout << "singleMu2016Trig1Fired:  "  << singleMu2016Trig1Fired << std::endl; 
-       }
-      
-      if (foundSingleMu2016Trig2 != std::string::npos){
-        singleMu2016Trig2Fired = true;
-        //std::cout << "singleMu2016Trig2Fired:  " << singleMu2016Trig2Fired << std::endl; 
-      }
-      
-      if (foundDoubleMu2016Trig1 != std::string::npos){
-        doubleMu2016Trig1Fired = true;
-          // std::cout << "doubleMu2016Trig1Fired:  " << doubleMu2016Trig1Fired << std::endl; 
-      }
-         
-      if (foundDoubleMu2016Trig2 != std::string::npos){
-        doubleMu2016Trig2Fired = true;
-        //std::cout << "doubleMu2016Trig2Fired:  " << doubleMu2016Trig2Fired << std::endl; 
-      }
-         
-      if (foundTripleMu2016Trig1 != std::string::npos){
-        tripleMu2016Trig1Fired = true;
-        //   std::cout << "tripleMu2016Trig1Fired:  " << tripleMu2016Trig1Fired << std::endl; 
-      }
-      
-      
-      if (singleMu2016Trig1Fired || singleMu2016Trig2Fired || doubleMu2016Trig1Fired || doubleMu2016Trig2Fired || tripleMu2016Trig1Fired){
-        event_fails_trigger = false;
-    //    std::cout << "Event passed 2016 triggers" << std::endl;
-        break; 
-      }
-    
-     }
-     
-     if (triggerYear == 2017){
-       std::string str6 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"); //call this DoubleMu2017Trig1
-       std::string str7 ("HLT_IsoMu27_v"); //call this SingleMu2017Trig1
-       std::string str7a ("HLT_TripleMu_12_10_5_v"); //call this TripleMu2017Trig1
-       std::string str7b ("HLT_TripleMu_10_5_5_DZ_v"); //call this TripleMu2017Trig2 
-         
-       std::size_t foundDoubleMu2017Trig1 = str.find(str6);
-       std::size_t foundSingleMu2017Trig1 = str.find(str7);
-       std::size_t foundTripleMu2017Trig1 = str.find(str7a);
-       std::size_t foundTripleMu2017Trig2 = str.find(str7b);
-       
-       if (foundSingleMu2017Trig1 != std::string::npos){
-         singleMu2017Trig1Fired = true;
-         //  std::cout << "singleMu2017Trig1Fired:  " << singleMu2017Trig1Fired << std::endl; 
-       } 
-       
-       if (foundDoubleMu2017Trig1 != std::string::npos){
-         doubleMu2017Trig1Fired = true;
-           //std::cout << "doubleMu2017Trig1Fired:  " << doubleMu2017Trig1Fired << std::endl; 
-       }
-       
-       if (foundTripleMu2017Trig1 != std::string::npos){
-         tripleMu2017Trig1Fired = true;
-         //  std::cout << "tripleMu2017Trig1Fired:  " << tripleMu2017Trig1Fired << std::endl;
-       }
-         
-       if (foundTripleMu2017Trig2 != std::string::npos){
-         tripleMu2017Trig2Fired = true;
-         //  std::cout << "tripleMu2017Trig2Fired:  " << tripleMu2017Trig2Fired << std::endl;
-       }
-       
-       if (singleMu2017Trig1Fired || doubleMu2017Trig1Fired || tripleMu2017Trig1Fired || tripleMu2017Trig2Fired){
-         event_fails_trigger = false;
-      //   std::cout << "Event passed 2017 triggers" << std::endl; 
-         break;
-       }  
-     
-     }
-     
-     if (triggerYear == 2018){
-       std::string str8 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v"); //call this DoubleMu2018Trig1
-       std::string str8a ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"); // call this DoubleMu2018Trig2
-       std::string str9 ("HLT_IsoMu24_v"); // call this SingleMu2018Trig1
-       std::string str9a ("HLT_TripleMu_12_10_5_v"); // call this TripleMu2018Trig1
-       std::string str9b ("HLT_TripleMu_10_5_5_DZ_v"); // call this TripleMu2018Trig2
-       
-       std::size_t foundDoubleMu2018Trig1 = str.find(str8);
-       std::size_t foundDoubleMu2018Trig2 = str.find(str8a);
-       std::size_t foundSingleMu2018Trig1 = str.find(str9);
-       std::size_t foundTripleMu2018Trig1 = str.find(str9a);
-       std::size_t foundTripleMu2018Trig2 = str.find(str9b);
-       
-       if (foundSingleMu2018Trig1 != std::string::npos){
-           singleMu2018Trig1Fired = true;
-          // std::cout << "singleMu2018Trig1Fired:  " << singleMu2018Trig1Fired << std::endl; 
-       }
-       
-       if (foundDoubleMu2018Trig1 != std::string::npos){
-           doubleMu2018Trig1Fired = true;
-       //    std::cout << "doubleMu2018Trig1Fired:  " << doubleMu2018Trig1Fired << std::endl; 
-       }
-       
-       if (foundDoubleMu2018Trig2 != std::string::npos){
-           doubleMu2018Trig2Fired = true;
-        //   std::cout << "doubleMu2018Trig2Fired:  " << doubleMu2018Trig2Fired << std::endl;
-       }
-       
-       if (foundTripleMu2018Trig1 != std::string::npos){
-           tripleMu2018Trig1Fired = true;
-          // std::cout << "tripleMu2018Trig1Fired:  " << tripleMu2018Trig1Fired << std::endl; 
-       }
-       
-       if (foundTripleMu2018Trig2 != std::string::npos){
-           tripleMu2018Trig2Fired = true;
-         //  std::cout << "tripleMu2018Trig2Fired:  " << tripleMu2018Trig2Fired << std::endl; 
-        }
-       
-       if (singleMu2018Trig1Fired || doubleMu2018Trig1Fired || doubleMu2018Trig2Fired || tripleMu2018Trig1Fired || tripleMu2018Trig2Fired){
-         event_fails_trigger = false;
-   //      std::cout << "Event passed 2018 triggers" << std::endl;
-         break;
-       
-       }
-     }
-   } 
+//    for (int iTrig =0; iTrig < (int)TREE->triggerlist->size(); iTrig++){
+//      //std::cout << TREE->triggerlist->at(iTrig) << std::endl;
+//      std::string str (TREE->triggerlist->at(iTrig));
+//      //std::cout << "str:  " << str << std::endl; 
+//      
+//      if (triggerYear == 2016){
+//        std::string str2 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"); //call this DoubleMu2016Trig1
+//        std::string str3 ("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"); //call this DoubleMu2016Trig2
+//        std::string str4 ("HLT_IsoMu24_v"); //call this SingleMu2016Trig1
+//        std::string str5 ("HLT_IsoTkMu24_v"); //call this SingleMu2016Trig2
+//        std::string str5a ("HLT_TripleMu_12_10_5_v"); //call this TripleMu2016Trig1
+//          
+//        std::size_t foundDoubleMu2016Trig1 = str.find(str2);
+//        std::size_t foundDoubleMu2016Trig2 = str.find(str3);
+//        std::size_t foundSingleMu2016Trig1 = str.find(str4);
+//        std::size_t foundSingleMu2016Trig2 = str.find(str5);
+//        std::size_t foundTripleMu2016Trig1 = str.find(str5a);
+//        
+//       if (foundSingleMu2016Trig1 != std::string::npos){
+//         singleMu2016Trig1Fired = true;
+//          //std::cout << "singleMu2016Trig1Fired:  "  << singleMu2016Trig1Fired << std::endl; 
+//        }
+//       
+//       if (foundSingleMu2016Trig2 != std::string::npos){
+//         singleMu2016Trig2Fired = true;
+//         //std::cout << "singleMu2016Trig2Fired:  " << singleMu2016Trig2Fired << std::endl; 
+//       }
+//       
+//       if (foundDoubleMu2016Trig1 != std::string::npos){
+//         doubleMu2016Trig1Fired = true;
+//           // std::cout << "doubleMu2016Trig1Fired:  " << doubleMu2016Trig1Fired << std::endl; 
+//       }
+//          
+//       if (foundDoubleMu2016Trig2 != std::string::npos){
+//         doubleMu2016Trig2Fired = true;
+//         //std::cout << "doubleMu2016Trig2Fired:  " << doubleMu2016Trig2Fired << std::endl; 
+//       }
+//          
+//       if (foundTripleMu2016Trig1 != std::string::npos){
+//         tripleMu2016Trig1Fired = true;
+//         //   std::cout << "tripleMu2016Trig1Fired:  " << tripleMu2016Trig1Fired << std::endl; 
+//       }
+//       
+//       
+//       if (singleMu2016Trig1Fired || singleMu2016Trig2Fired || doubleMu2016Trig1Fired || doubleMu2016Trig2Fired || tripleMu2016Trig1Fired){
+//         event_fails_trigger = false;
+//     //    std::cout << "Event passed 2016 triggers" << std::endl;
+//         break; 
+//       }
+//     
+//      }
+//      
+//      if (triggerYear == 2017){
+//        std::string str6 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"); //call this DoubleMu2017Trig1
+//        std::string str7 ("HLT_IsoMu27_v"); //call this SingleMu2017Trig1
+//        std::string str7a ("HLT_TripleMu_12_10_5_v"); //call this TripleMu2017Trig1
+//        std::string str7b ("HLT_TripleMu_10_5_5_DZ_v"); //call this TripleMu2017Trig2 
+//          
+//        std::size_t foundDoubleMu2017Trig1 = str.find(str6);
+//        std::size_t foundSingleMu2017Trig1 = str.find(str7);
+//        std::size_t foundTripleMu2017Trig1 = str.find(str7a);
+//        std::size_t foundTripleMu2017Trig2 = str.find(str7b);
+//        
+//        if (foundSingleMu2017Trig1 != std::string::npos){
+//          singleMu2017Trig1Fired = true;
+//          //  std::cout << "singleMu2017Trig1Fired:  " << singleMu2017Trig1Fired << std::endl; 
+//        } 
+//        
+//        if (foundDoubleMu2017Trig1 != std::string::npos){
+//          doubleMu2017Trig1Fired = true;
+//            //std::cout << "doubleMu2017Trig1Fired:  " << doubleMu2017Trig1Fired << std::endl; 
+//        }
+//        
+//        if (foundTripleMu2017Trig1 != std::string::npos){
+//          tripleMu2017Trig1Fired = true;
+//          //  std::cout << "tripleMu2017Trig1Fired:  " << tripleMu2017Trig1Fired << std::endl;
+//        }
+//          
+//        if (foundTripleMu2017Trig2 != std::string::npos){
+//          tripleMu2017Trig2Fired = true;
+//          //  std::cout << "tripleMu2017Trig2Fired:  " << tripleMu2017Trig2Fired << std::endl;
+//        }
+//        
+//        if (singleMu2017Trig1Fired || doubleMu2017Trig1Fired || tripleMu2017Trig1Fired || tripleMu2017Trig2Fired){
+//          event_fails_trigger = false;
+//       //   std::cout << "Event passed 2017 triggers" << std::endl; 
+//          break;
+//        }  
+//      
+//      }
+//      
+//      if (triggerYear == 2018){
+//        std::string str8 ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v"); //call this DoubleMu2018Trig1
+//        std::string str8a ("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"); // call this DoubleMu2018Trig2
+//        std::string str9 ("HLT_IsoMu24_v"); // call this SingleMu2018Trig1
+//        std::string str9a ("HLT_TripleMu_12_10_5_v"); // call this TripleMu2018Trig1
+//        std::string str9b ("HLT_TripleMu_10_5_5_DZ_v"); // call this TripleMu2018Trig2
+//        
+//        std::size_t foundDoubleMu2018Trig1 = str.find(str8);
+//        std::size_t foundDoubleMu2018Trig2 = str.find(str8a);
+//        std::size_t foundSingleMu2018Trig1 = str.find(str9);
+//        std::size_t foundTripleMu2018Trig1 = str.find(str9a);
+//        std::size_t foundTripleMu2018Trig2 = str.find(str9b);
+//        
+//        if (foundSingleMu2018Trig1 != std::string::npos){
+//            singleMu2018Trig1Fired = true;
+//           // std::cout << "singleMu2018Trig1Fired:  " << singleMu2018Trig1Fired << std::endl; 
+//        }
+//        
+//        if (foundDoubleMu2018Trig1 != std::string::npos){
+//            doubleMu2018Trig1Fired = true;
+//        //    std::cout << "doubleMu2018Trig1Fired:  " << doubleMu2018Trig1Fired << std::endl; 
+//        }
+//        
+//        if (foundDoubleMu2018Trig2 != std::string::npos){
+//            doubleMu2018Trig2Fired = true;
+//         //   std::cout << "doubleMu2018Trig2Fired:  " << doubleMu2018Trig2Fired << std::endl;
+//        }
+//        
+//        if (foundTripleMu2018Trig1 != std::string::npos){
+//            tripleMu2018Trig1Fired = true;
+//           // std::cout << "tripleMu2018Trig1Fired:  " << tripleMu2018Trig1Fired << std::endl; 
+//        }
+//        
+//        if (foundTripleMu2018Trig2 != std::string::npos){
+//            tripleMu2018Trig2Fired = true;
+//          //  std::cout << "tripleMu2018Trig2Fired:  " << tripleMu2018Trig2Fired << std::endl; 
+//         }
+//        
+//        if (singleMu2018Trig1Fired || doubleMu2018Trig1Fired || doubleMu2018Trig2Fired || tripleMu2018Trig1Fired || tripleMu2018Trig2Fired){
+//          event_fails_trigger = false;
+//    //      std::cout << "Event passed 2018 triggers" << std::endl;
+//          break;
+//        
+//        }
+//      }
+//    } 
    
-   if (event_fails_trigger){
-     continue;
-   }
+//   if (event_fails_trigger){
+//     continue;
+//   }
    
    //SPS XSec and weights handled below
    
@@ -1254,7 +1242,6 @@ void run(string file){//, string file2){
 //        }
            
        if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {  
-           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
           //  if (dZ > dR + offset){
@@ -1332,7 +1319,7 @@ void run(string file){//, string file2){
    //     std::cout << "DZ_Sig:  " << DZ_Sig << std::endl;
          h_DZ_Sig->Fill(DZ_Sig);
    }        
-   //    std::cout << "real_dist_btwn_dimuonvtx1_and_dimuonvtx2:  " << real_dist_btwn_dimuonvtx1_and_dimuonvtx2 << std::endl;  
+           
            //If we get here, we have a survivor 
            
  //          survivor_Z_first_upsi_phase1_second_pair_12_34_56 = true;
@@ -1402,17 +1389,6 @@ void run(string file){//, string file2){
            temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
            temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
            temp_weightToApply.push_back(weightToApply);
-           
-           if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-             double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-             temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-           }
-           else{
-             double dZ = -1;
-             temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-           } 
-           
-           
            }
             GotHereCount_Z_first_upsi_phase1_second_pair_12_34_56 += 1;
            //then I would have to write a new if doMCTruthMatching block, do the truth matching // flagPoodle
@@ -1602,15 +1578,6 @@ void run(string file){//, string file2){
                  temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                  temp_weightToApply.push_back(weightToApply);
                  
-                 if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-                   double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-                   temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                }
-                else{
-                  double dZ = -1;
-                  temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                } 
-                 
                  
                  }
                  
@@ -1733,7 +1700,6 @@ void run(string file){//, string file2){
           // double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
           
         if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
-           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
             h_dz_vs_4MuVtxProb->Fill(dZ, TREE->big4MuVtx->at(i));
@@ -1859,14 +1825,6 @@ void run(string file){//, string file2){
               temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
               temp_weightToApply.push_back(weightToApply);
               
-              if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-               double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-               temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-              }
-              else{
-                double dZ = -1;
-               temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-              } 
              }
            
            //flag Begin MC Truth Matching section here
@@ -2039,15 +1997,6 @@ void run(string file){//, string file2){
                    temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
                    temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                    temp_weightToApply.push_back(weightToApply);
-                   
-                   if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-                     double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-                     temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                    }
-                   else{
-                    double dZ = -1;
-                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                   } 
                   
                   }
                // }
@@ -2192,7 +2141,6 @@ void run(string file){//, string file2){
            
        //    double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
 if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
-           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
           //  if (dZ > dR + offset){
@@ -2311,15 +2259,6 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
                temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                temp_weightToApply.push_back(weightToApply);
-               
-               if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-                double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-                temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                }
-               else{
-                double dZ = -1;
-                temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-               } 
                
               }
             
@@ -2496,16 +2435,6 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                     temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
                     temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                     temp_weightToApply.push_back(weightToApply);
-                    
-                    if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-                      double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-                      temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                    }
-                    else{
-                      double dZ = -1;
-                      temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                    } 
-                    
                   }
                // }
              // }
@@ -2615,7 +2544,6 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
            
       //     double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
   if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
-           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
            
@@ -2740,14 +2668,6 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                 temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                 temp_weightToApply.push_back(weightToApply);
                 
-                if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-                  double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-                  temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                }
-                else{
-                  double dZ = -1;
-                  temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                } 
                 
               }
             
@@ -2923,14 +2843,6 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                   temp_weightToApply.push_back(weightToApply);
                   
-                  if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-                    double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                  }
-                  else{
-                    double dZ = -1;
-                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                   } 
                   
                   }
                // }
@@ -3066,7 +2978,6 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
            
         //   double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
     if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
-           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
            
@@ -3189,15 +3100,7 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                  temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
                  temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                  temp_weightToApply.push_back(weightToApply);
-                 
-                if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-                  double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-                  temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                }
-                else{
-                  double dZ = -1;
-                  temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                } 
+            
             
             }
               
@@ -3373,15 +3276,6 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                    temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                    temp_weightToApply.push_back(weightToApply);
                    
-                   if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-                     double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-                     temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                   }
-                   else{
-                    double dZ = -1;
-                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                   } 
-                   
                   }
                   
                   
@@ -3497,7 +3391,6 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
            
      //      double dR = dimuon1vtx_vec.DeltaR(dimuon2vtx_vec);
    if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vtx_vec.Z() == -1000. || dimuon2vtx_vec.X() == -1000. || dimuon2vtx_vec.Y() == -1000. || dimuon2vtx_vec.Z() == -1000.) ) {
-           real_dist_btwn_dimuonvtx1_and_dimuonvtx2 = true;
            double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
            
         //    if (dZ > dR + offset){
@@ -3617,15 +3510,7 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   temp_SPS_LHE_Weight.push_back(SPS_LHE_Weight);
                   temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                   temp_weightToApply.push_back(weightToApply);
-                 
-                  if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-                    double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                  }
-                  else{
-                    double dZ = -1;
-                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                  } 
+                
                 
                 }
              
@@ -3797,14 +3682,6 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                   temp_SPS_Subprocess_XSec.push_back(SPS_Subprocess_XSec);
                   temp_weightToApply.push_back(weightToApply);
                   
-                  if (real_dist_btwn_dimuonvtx1_and_dimuonvtx2){
-                    double dZ = fabs(dimuon1vtx_vec.Z() - dimuon2vtx_vec.Z());
-                    temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                 }
-                 else{
-                   double dZ = -1;
-                   temp_dZ_dimuonvtx1_dimuonvtx2.push_back(dZ); 
-                 } 
                   
                   }
                   
@@ -3934,7 +3811,6 @@ for (int jj=0; jj<(int)temp_big4MuVtxProb.size(); jj++)   {
      SPS_LHE_Weight = temp_SPS_LHE_Weight.at(jj);
      SPS_Subprocess_XSec = temp_SPS_Subprocess_XSec.at(jj);
      weightToApply = temp_weightToApply.at(jj);
-     dZ_dimuonvtx1_dimuonvtx2 = temp_dZ_dimuonvtx1_dimuonvtx2.at(jj);
      
      
      if (doMCTruthMatching){
@@ -3944,8 +3820,6 @@ for (int jj=0; jj<(int)temp_big4MuVtxProb.size(); jj++)   {
      if (!doMCTruthMatching){
         upsi_type = -1;
       }
-      
-    
      
       vertex_comparator = temp_big4MuVtxProb.at(jj); //this line is key!
       
