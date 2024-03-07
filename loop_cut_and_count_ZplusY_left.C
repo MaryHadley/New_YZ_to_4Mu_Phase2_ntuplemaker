@@ -274,7 +274,7 @@ void run(string file){//, string file2){
   
   double upsi_mass_high_phase1 = 12;
   
- //Cut so that we only get Y(1S) states 
+ //Cut so that we only look to the left of the Y(1S) peak 
  
   //From MC, we know the the sigma of the Y(1S) Gaussian is, to close enough approximation for our purposes, 0.1 GeV.
   
@@ -282,11 +282,13 @@ void run(string file){//, string file2){
   
   double upsi1S_true_mass = 9.46;
   
-  double num_of_sig_mass_windows = 2.5;
- 
-  double upsi_mass_low_phase2 = upsi1S_true_mass - (num_of_sig_mass_windows * upsi1S_sig_mass_window); //8.5;
+  double num_of_sig_mass_windows_high_end = 2.5;
   
-  double upsi_mass_high_phase2 = upsi1S_true_mass + (num_of_sig_mass_windows * upsi1S_sig_mass_window); //11
+  double num_of_sig_mass_windows_low_end = 5.;
+ 
+  double upsi_mass_low_phase2 = upsi1S_true_mass - (num_of_sig_mass_windows_low_end * upsi1S_sig_mass_window); //8.5;
+  
+  double upsi_mass_high_phase2 = upsi1S_true_mass - (num_of_sig_mass_windows_high_end * upsi1S_sig_mass_window); //11
   
   double lead_mu_from_Z_pT_Cut = 30;
   
@@ -380,7 +382,7 @@ void run(string file){//, string file2){
   //Variable for study suggested by Achim
   double dZ_dimuonvtx1_dimuonvtx2 = -99;
   
-  TFile *ntuple = new TFile("ntuple_2018Data_cut_and_count.root", "RECREATE");
+  TFile *ntuple = new TFile("ntuple_2018Data_cut_and_count_left.root", "RECREATE");
   TTree *aux;
   aux = new TTree("tree", "tree");
   aux->Branch("mass1_quickAndDirty", &mass1_quickAndDirty);
@@ -1184,7 +1186,7 @@ void run(string file){//, string file2){
            
            h_cutflow_Z_first_upsi_phase1_second_pair_12_34_56->Fill(9);
            
-           if (  (lepton3 + lepton4).M()    < upsi_mass_low_phase2 || (lepton3 + lepton4).M() > upsi_mass_high_phase2 ){
+           if (  (lepton3 + lepton4).M()    < upsi_mass_low_phase2 || (lepton3 + lepton4).M() >= upsi_mass_high_phase2 ){
                // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl;
                FailureCount +=1; 
                continue;  
@@ -1688,7 +1690,7 @@ void run(string file){//, string file2){
                 continue;
             }
             
-            if ( (lepton1 + lepton2).M() < upsi_mass_low_phase2 || (lepton1 + lepton2).M() > upsi_mass_high_phase2 ){
+            if ( (lepton1 + lepton2).M() < upsi_mass_low_phase2 || (lepton1 + lepton2).M() >= upsi_mass_high_phase2 ){
                 // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl;
                 continue; 
             }
@@ -2148,7 +2150,7 @@ void run(string file){//, string file2){
               continue; 
             }
             
-            if ( (lepton2 + lepton4).M() < upsi_mass_low_phase2 || (lepton2 + lepton4).M() > upsi_mass_high_phase2){
+            if ( (lepton2 + lepton4).M() < upsi_mass_low_phase2 || (lepton2 + lepton4).M() >= upsi_mass_high_phase2){
               // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl;
               continue;  
             }
@@ -2571,7 +2573,7 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                continue; 
             }
             
-            if ( (lepton1 + lepton3).M() < upsi_mass_low_phase2 || (lepton1 + lepton3).M() > upsi_mass_high_phase2){
+            if ( (lepton1 + lepton3).M() < upsi_mass_low_phase2 || (lepton1 + lepton3).M() >= upsi_mass_high_phase2){
                // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl;
                continue; 
             }
@@ -3024,7 +3026,7 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                continue;  
             }
             
-            if ( (lepton2 + lepton3).M() < upsi_mass_low_phase2 || (lepton2 + lepton3).M() > upsi_mass_high_phase2 ){
+            if ( (lepton2 + lepton3).M() < upsi_mass_low_phase2 || (lepton2 + lepton3).M() >= upsi_mass_high_phase2 ){
                // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl;
                continue; 
             }
@@ -3453,7 +3455,7 @@ if (! (dimuon1vtx_vec.X() == -1000. || dimuon1vtx_vec.Y() == -1000. || dimuon1vt
                  continue; 
              }
              
-             if ( (lepton1 + lepton4).M() < upsi_mass_low_phase2 || (lepton1+lepton4).M() > upsi_mass_high_phase2 ){
+             if ( (lepton1 + lepton4).M() < upsi_mass_low_phase2 || (lepton1+lepton4).M() >= upsi_mass_high_phase2 ){
                  // std::cout << "FAILED the tighter phase2 upsi mass cuts!" << std::endl; 
                  continue; 
                 
